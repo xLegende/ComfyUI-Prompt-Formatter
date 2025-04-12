@@ -7,24 +7,110 @@ quality:
   - best quality
   - high quality
   - amazing quality
+  - great quality
   - absurdres
   - highres
-  - ultra detailed
-  - very aesthetic
+  - ultra high res
   - high resolution
   - absurd resolution
+  - ultra detailed
+  - finely detailed
+  - intricate details
+  - sharp focus
+  - very aesthetic
+  - professional photo
   - ultra-detailed
+  
+# --- Negative Quality Tags ---
+negative:
+  - worst quality
+  - low quality
+  - normal quality
+  - jpeg artifacts
+  - blurry
+  - lowres
+  - text
+  - error
+  - signature
+  - watermark
+  - username
+  - artist name
+  - censored
+  - deformed
+  - bad anatomy
+  - disfigured
+  - poorly drawn face
+  - mutation
+  - mutated
+  - extra limb
+  - ugly
+  - poorly drawn hands
+  - missing limb
+  - blurry
+  - floating limbs
+  - disconnected limbs
+  - malformed hands
+  - long neck
+  - long body
+  - duplicate
+  - morbid
+  - mutilated
+  - extra fingers
+  - mutated hands
+  - poorly drawn eyes
+  - bad hands
+  - missing fingers
+  - cropped
 
 # --- Style Tags ---
 style:
   - photorealistic
+  - realistic
   - photograph
-  - anime style
-  - manga style
-  - illustration
+  - photography
+  - analog style
+  - digital painting
   - concept art
+  - illustration
+  - drawing
+  - sketch
+  - doodle
+  - comic style
+  - comic
+  - manga style
+  - manga
+  - anime style
+  - anime
+  - cinematic
+  - movie still
+  - 3d render
+  - vfx
+  - game art
+  - fantasy art
+  - sci-fi art
+  - abstract
+  - surreal
+  - impressionism
+  - expressionism
+  - pop art
+  - art nouveau
+  - baroque
+  - rococo
   - watercolor
   - oil painting
+  - acrylic painting
+  - charcoal drawing
+  - crayon drawing
+  - ink drawing
+  - cel shading
+  - flat colors
+  - pixel art
+  - isometric
+  - low poly
+  - stained glass
+  - mosaic
+  - sculpture
+  - claymation
 
 # --- Character Basics ---
 character_num:
@@ -36,36 +122,153 @@ character_num:
   - 3boys
   - 4girls
   - 4boys
+  - 5+girls
+  - 5+boys
+  - group
+  - crowd
   - solo
+  - couple
   - multiple boys
   - multiple girls
+  - mixed group
+  
+ # --- Character Age/Type ---
+character_type:
+  - child
+  - teenager
+  - young adult
+  - adult
+  - middle-aged
+  - middle aged
+  - old man
+  - old woman
+  - man
+  - woman
+  - boy
+  - girl
+  - elf
+  - dwarf
+  - orc
+  - goblin
+  - robot
+  - cyborg
+  - monster
+  - monster girl
+  - creature
+  - animal character
 
 # --- Appearance Details ---
 eyes:
   - blue eyes
   - green eyes
   - brown eyes
+  - black eyes
+  - hazel eyes
+  - grey eyes
+  - amber eyes
   - red eyes
+  - pink eyes
+  - purple eyes
+  - yellow eyes
+  - orange eyes
+  - white eyes
+  - silver eyes
+  - aqua eyes
   - heterochromia
+  - different colored eyes
   - glowing eyes
+  - empty eyes
   - closed eyes
+  - half-closed eyes
+  - squinting
+  - wide eyes
+  - beautiful eyes
+  - detailed eyes
+  - slit pupils
+  - no pupils
+  - cat eyes
+  - snake eyes
+  - demon eyes
+  - tired eyes
 
 hair_color:
   - blonde hair
+  - light brown hair
   - brown hair
+  - dark brown hair
   - black hair
+  - auburn hair
   - red hair
+  - orange hair
+  - ginger hair
   - pink hair
+  - hot pink hair
+  - purple hair
+  - blue hair
+  - light blue hair
+  - cyan hair
+  - green hair
+  - lime green hair
+  - yellow hair
+  - white hair
+  - grey hair
   - silver hair
+  - platinum blonde hair
+  - rainbow hair
+  - multi-colored hair
+  - multicolored hair
+  - gradient hair
+  - highlights
+  - two-tone hair
+  - split-color hair
+  - streaked hair
 
 hair_style:
   - long hair
+  - very long hair
   - short hair
+  - very short hair
   - medium hair
-  - ponytail
-  - twintails
+  - shoulder-length hair
   - bob cut
+  - pixie cut
+  - bald
+  - shaved head
+  - buzz cut
+  - ponytail
+  - high ponytail
+  - low ponytail
+  - side ponytail
+  - twintails
+  - pigtails
+  - braids
+  - french braid
+  - dutch braid
+  - fishtail braid
+  - single braid
+  - braided ponytail
+  - bun
+  - double bun
+  - hair buns
   - messy hair
+  - spiky hair
+  - curly hair
+  - wavy hair
+  - straight hair
+  - slicked back hair
+  - side swept bangs
+  - bangs
+  - blunt bangs
+  - hime cut
+  - ahoge
+  - dreadlocks
+  - cornrows
+  - hair ornaments
+  - hair ribbon
+  - hair flower
+  - hair clip
+  - hairpin
+  - headband
 
 # --- General Person Details 
 person_details:
@@ -80,46 +283,325 @@ person_details:
 
 # --- Clothing ---
 clothing:
-  - dress
-  - red dress
-  - blue shirt
+  # Tops
+  - shirt
   - t-shirt
-  - jeans
-  - skirt
-  - school uniform
-  - jacket
+  - blouse
+  - tank top
+  - crop top
+  - sweater
+  - turtleneck
   - hoodie
+  - jacket
+  - coat
+  - blazer
+  - vest
+  - cardigan
+  # Bottoms
+  - pants
+  - jeans
+  - shorts
+  - skirt
+  - mini skirt
+  - pleated skirt
+  - leggings
+  - trousers
+  # Dresses/Suits
+  - dress
+  - long dress
+  - short dress
+  - sundress
+  - evening gown
+  - ball gown
+  - cocktail dress
+  - suit
+  - business suit
+  - tuxedo
+  - jumpsuit
+  # Outfits
+  - school uniform
+  - sailor uniform
+  - gym uniform
+  - tracksuit
+  - pajamas
+  - swimsuit
+  - bikini
+  - one-piece swimsuit
+  - maid outfit
+  - nurse uniform
+  - police uniform
+  - military uniform
+  - fantasy armor
+  - sci-fi armor
+  - traditional japanese clothes
+  - kimono
+  - yukata
+  - bodysuit
+  - black bodysuit
+  # Footwear
+  - shoes
+  - sneakers
+  - boots
+  - high heels
+  - sandals
+  - socks
+  - stockings
+  - thighhighs
+  - thighhigh
+  - thigh boots
+  # Accessories
   - hat
+  - cap
+  - beanie
+  - fedora
+  - witch hat
+  - helmet
   - glasses
+  - sunglasses
+  - eyepatch
+  - mask
+  - scarf
+  - tie
+  - bowtie
+  - necklace
+  - choker
+  - earrings
+  - bracelet
+  - watch
+  - ring
+  - gloves
+  - mittens
+  - belt
+  - backpack
+  - bag
+  - purse
+  - ribbon
+  - bow
 
 # --- Actions ---
 actions:
-  - smiling
-  - looking at viewer
-  - running
-  - sitting
   - standing
+  - sitting
   - lying down
+  - kneeling
+  - crouching
+  - running
+  - walking
+  - jumping
+  - dancing
+  - singing
+  - playing instrument
+  - reading book
+  - writing
+  - eating
+  - drinking
+  - cooking
+  - fighting
+  - casting spell
+  - praying
+  - sleeping
+  - stretching
+  - yawning
+  - waving
+  - pointing
   - holding object
+  - holding weapon
+  - holding hands
+  - hugging
+  - kissing
+  - leaning
+  - reaching
+  - pushing
+  - pulling
+  - arms crossed
+  - hands on hips
+  - hand on chin
+  - victory pose
+  - peace sign
+  - thumbs up
+  - shushing pose
 
 # --- Setting/Background ---
 setting:
+  # Location Type
   - outdoors
   - indoors
   - nature
+  - landscape
+  - cityscape
+  - urban
+  # Specific Outdoors
   - forest
-  - city
-  - street
+  - woods
+  - jungle
+  - mountains
+  - desert
+  - beach
+  - ocean
+  - sea
+  - lake
+  - river
+  - field
+  - meadow
+  - garden
+  - park
+  - swamp
+  - cave
+  - ruins
+  # Specific Indoors
   - room
+  - bedroom
+  - living room
+  - kitchen
+  - bathroom
+  - library
+  - classroom
+  - office
+  - laboratory
+  - workshop
+  - castle interior
+  - church interior
+  - temple interior
+  - shop
+  - cafe
+  - bar
+  - restaurant
+  - spaceship interior
+  - futuristic city
+  # Background Style
   - white background
+  - black background
+  - grey background
+  - colored background
   - simple background
   - detailed background
+  - blurred background
+  - bokeh
+  - abstract background
+  - patterned background
+  - sky
+  - clouds
+  - stars
+  - space
+  # Time of Day
+  - day
+  - night
+  - morning
+  - afternoon
+  - evening
+  - twilight
+  - sunset
+  - sunrise
+  - golden hour
+  # Weather
+  - sunny
+  - cloudy
+  - overcast
+  - rainy
+  - raining
+  - storm
+  - thunderstorm
+  - snowy
+  - snowing
+  - blizzard
+  - foggy
+  - windy
+  
+# --- Camera & Composition ---
+camera:
+  # Shot Type
+  - close-up shot
+  - medium shot
+  - full shot
+  - long shot
+  - cowboy shot
+  - extreme close-up
+  - portrait
+  - headshot
+  - upper body
+  - full body
+  # Angle
+  - eye level shot
+  - high angle shot
+  - low angle shot
+  - dutch angle
+  - overhead shot
+  - worm's eye view
+  - pov (point of view)
+  # Lens/Focus
+  - wide angle lens
+  - telephoto lens
+  - fisheye lens
+  - depth of field
+  - shallow depth of field
+  - rack focus
+  - soft focus
+  # Lighting
+  - cinematic lighting
+  - volumetric lighting
+  - dramatic lighting
+  - studio lighting
+  - soft lighting
+  - harsh lighting
+  - rim lighting
+  - backlighting
+  - natural lighting
+  - sunlight
+  - moonlight
+  - candle light
+  - neon lights
+  - lens flare
+  # Composition
+  - rule of thirds
+  - centered composition
+  - symmetrical composition
+  - asymmetrical composition
+  - leading lines
+  - dynamic angle
+  - dynamic pose
+  
+# --- Atmosphere & Mood ---
+atmosphere:
+  - atmospheric
+  - moody
+  - dramatic
+  - intense
+  - serene
+  - peaceful
+  - calm
+  - tranquil
+  - cheerful
+  - happy
+  - playful
+  - romantic
+  - nostalgic
+  - melancholic
+  - sad
+  - lonely
+  - mysterious
+  - eerie
+  - spooky
+  - creepy
+  - horrific
+  - dark
+  - gloomy
+  - magical
+  - enchanting
+  - whimsical
+  - dreamlike
+  - epic
+  - majestic
+  - vibrant
+  - energetic
 
 # --- NSFW Example (Use Responsibly) ---
-nsfw_body:
+nsfw:
   - large breasts
   - medium breasts
   - small breasts
   - nude
   - naked
   - explicit
+  - nsfw
+  - questionable content
+  - sensitive content
