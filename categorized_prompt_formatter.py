@@ -56,7 +56,7 @@ def find_yaml_file(filename):
                  return input_dir_path
         # Fallback search upwards from node dir if cwd isn't reliable
         search_dir = node_dir
-        for _ in range(5): # Limit search depth
+        for _ in range(5):
              if (search_dir / 'input').exists():
                  input_dir_path = search_dir / 'input' / filename
                  if input_dir_path.is_file():
@@ -66,7 +66,7 @@ def find_yaml_file(filename):
                      input_dir_path = search_dir / 'input' / filename
                      if input_dir_path.is_file():
                          return input_dir_path
-                 break # Stop searching up
+                 break 
              parent = search_dir.parent
              if parent == search_dir: break 
              search_dir = parent
@@ -157,6 +157,7 @@ class CategorizedPromptFormatter:
                  "case_sensitive_matching": ("BOOLEAN", {"default": False}),
                  "handle_weights": ("BOOLEAN", {"default": True}),
                  "match_underscores_spaces": ("BOOLEAN", {"default": True}),
+                 "disable_duplicates": ("BOOLEAN", {"default": False}),
                  "unmatched_tag_handling": (["discard", "append_end", "output_separately"], {"default": "discard"}),
             }
         }
@@ -164,12 +165,12 @@ class CategorizedPromptFormatter:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("formatted_prompt", "rejected_prompt")
     FUNCTION = "format_prompt"
-    CATEGORY = "text/filtering" # Or your preferred category
+    CATEGORY = "text/filtering" 
 
     def format_prompt(self, prompt, category_definition_file, output_template,
                       input_delimiter=",", output_delimiter=", ", strip_whitespace=True,
                       case_sensitive_matching=False, match_underscores_spaces=True, handle_weights=True,
-                      unmatched_tag_handling="discard"):
+                      disable_duplicates=False, unmatched_tag_handling="discard"):
 
         # --- 1. Load Category Definitions ---
         tag_to_categories_map = defaultdict(list)
@@ -183,15 +184,14 @@ class CategorizedPromptFormatter:
                     for category, tags in yaml_data.items():
                         if isinstance(tags, list):
                             for tag in tags:
-                                processed_tag = str(tag).strip() # Ensure string and strip
+                                processed_tag = str(tag).strip()
                                 if not case_sensitive_matching:
                                     processed_tag = processed_tag.lower()
-                                if processed_tag: # Avoid empty tags
+                                if processed_tag:
                                     tag_to_categories_map[processed_tag].append(str(category).strip())
             except FileNotFoundError:
                 print(f"Error: YAML file not found at resolved path: {yaml_path}")
-                # Return empty prompts or raise an error? Let's return empty.
-                return ("", prompt) # Return original prompt as rejected if file fails
+                return ("", prompt) 
             except yaml.YAMLError as e:
                 print(f"Error parsing YAML file {yaml_path}: {e}")
                 return ("", prompt)
@@ -200,12 +200,11 @@ class CategorizedPromptFormatter:
                  return ("", prompt)
         else:
             print(f"Warning: Category definition file '{category_definition_file}' not found. Proceeding without categorization.")
-            # If no categories, all tags will be unmatched
 
         # --- 2. Parse Input Prompt & Categorize ---
         categorized_tags = defaultdict(list)
         all_input_tags_original = set()
-        processed_input_tags = [] # Store (original_tag, base_tag for matching)
+        processed_input_tags = [] 
 
         if prompt:
             raw_tags = prompt.split(input_delimiter)
@@ -218,7 +217,7 @@ class CategorizedPromptFormatter:
 
                 # Prepare the tag used for dictionary lookups (case normalization)
                 lookup_key_base = base_parsed if case_sensitive_matching else base_parsed.lower()
-                processed_input_tags.append((original_parsed, lookup_key_base)) # Store original and the key base
+                processed_input_tags.append((original_parsed, lookup_key_base)) 
 
         matched_original_tags = set()
         for original_tag, lookup_key_base in processed_input_tags:
@@ -236,51 +235,63 @@ class CategorizedPromptFormatter:
                     categories = tag_to_categories_map.get(variant)
                     if categories:
                         found_categories = categories
-                        break # Found a match, stop checking variants for this tag
+                        break #
             else:
                 # Direct lookup if matching is disabled
                 found_categories = tag_to_categories_map.get(lookup_key_base)
 
-            # If categories were found (using either direct or variant matching)
+            # If categories were found 
             if found_categories:
                 for category in found_categories:
-                    # IMPORTANT: Append the ORIGINAL tag (with weights etc.)
                     categorized_tags[category].append(original_tag)
-                matched_original_tags.add(original_tag) # Mark the ORIGINAL tag as matched
+                matched_original_tags.add(original_tag) 
 
         # --- 3. Process Template ---
-        formatted_output_string = output_template
-        placeholders = re.findall(r"<\|(.*?)\|>|", output_template) # Find placeholders like <|name|>
-        placeholders = [p for p in placeholders if p] # Filter out empty strings from regex artifact
+        formatted_output_string = "" # Will be built piece by piece
+        placeholders = re.findall(r"<\|(.*?)\|>|", output_template)
+        placeholders = [p for p in placeholders if p]
 
+        # Track tags added to the output string to prevent duplicates if requested
+        already_added_tags = set()
+        # Track tags considered "used" by the template for rejection logic
         used_in_template_tags = set()
 
-        # Use a temporary string builder approach to avoid issues with replacing overlapping parts
         result_parts = []
         last_end = 0
         for match in re.finditer(r"<\|(.*?)\|>|", output_template):
             placeholder_content = match.group(1)
             start, end = match.span()
 
-            # Append the text segment before the placeholder
+            # Append the literal text segment before the placeholder
             result_parts.append(output_template[last_end:start])
 
             if placeholder_content:
                 category_name = placeholder_content.strip()
                 tags_for_category = categorized_tags.get(category_name, [])
-                if tags_for_category:
-                    joined_tags = output_delimiter.join(tags_for_category)
-                    result_parts.append(joined_tags)
-                    used_in_template_tags.update(tags_for_category) # Keep track of used tags
-                # If category not found or has no tags, effectively replaces with empty string
-            else:
-                 # Append the matched placeholder itself if it wasn't valid (shouldn't happen with this regex but safer)
-                 result_parts.append(match.group(0))
 
+                if tags_for_category:
+                    # Mark all tags associated with this placeholder as 'used' by the template
+                    # This happens *before* deduplication, as the template *did* reference them.
+                    used_in_template_tags.update(tags_for_category)
+
+                    tags_to_join = []
+                    if disable_duplicates:
+                        # Filter out tags already added
+                        for tag in tags_for_category:
+                            if tag not in already_added_tags:
+                                tags_to_join.append(tag)
+                                already_added_tags.add(tag) # Mark as added
+                    else:
+                        # Include all tags if duplicates are allowed
+                        tags_to_join = tags_for_category
+
+                    if tags_to_join:
+                         joined_tags = output_delimiter.join(tags_to_join)
+                         result_parts.append(joined_tags)
 
             last_end = end
 
-        # Append any remaining text after the last placeholder
+        # Append any remaining literal text after the last placeholder
         result_parts.append(output_template[last_end:])
 
         formatted_output_string = "".join(result_parts)
@@ -289,7 +300,7 @@ class CategorizedPromptFormatter:
         # --- 4. Handle Unmatched Tags ---
         rejected_tags_list = []
         if unmatched_tag_handling != "discard":
-            # Find tags that were in the input but *not* used in the template substitution
+            # Find tags that were in the input but NOT marked as 'used' by the template placeholders
             rejected_tags_list = list(all_input_tags_original - used_in_template_tags)
 
         rejected_output_string = ""

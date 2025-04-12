@@ -17,9 +17,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
 
 print("...")
-print("...")
 print("### Loading: ComfyUI-Prompt-Formatter ###")
-print("### Version: 1.0") # Optional version print
+print("### Version: 1.1")
 print(f"### Node: {NODE_NAME} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME]}")
-print("...")
 print("...")
