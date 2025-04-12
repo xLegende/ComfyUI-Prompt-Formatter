@@ -6,9 +6,14 @@ quality:
   - masterpiece
   - best quality
   - high quality
+  - amazing quality
   - absurdres
   - highres
   - ultra detailed
+  - very aesthetic
+  - high resolution
+  - absurd resolution
+  - ultra-detailed
 
 # --- Style Tags ---
 style:
@@ -26,8 +31,14 @@ character_num:
   - 1girl
   - 1boy
   - 2girls
+  - 2boys
+  - 3girls
+  - 3boys
+  - 4girls
+  - 4boys
   - solo
   - multiple boys
+  - multiple girls
 
 # --- Appearance Details ---
 eyes:
@@ -104,9 +115,11 @@ setting:
   - simple background
   - detailed background
 
-# --- NSFW Example (Illustrative - Use Responsibly) ---
-# nsfw_body:
-#   - large breasts
-#   - small breasts
-#   - nude
-#   - explicit
+# --- NSFW Example (Use Responsibly) ---
+nsfw_body:
+  - large breasts
+  - medium breasts
+  - small breasts
+  - nude
+  - naked
+  - explicit

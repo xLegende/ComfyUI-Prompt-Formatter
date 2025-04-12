@@ -158,6 +158,7 @@ class CategorizedPromptFormatter:
                  "strip_whitespace": ("BOOLEAN", {"default": True}),
                  "case_sensitive_matching": ("BOOLEAN", {"default": False}),
                  "handle_weights": ("BOOLEAN", {"default": True}),
+                 "match_underscores_spaces": ("BOOLEAN", {"default": True}),
                  "unmatched_tag_handling": (["discard", "append_end", "output_separately"], {"default": "discard"}),
             }
         }
@@ -206,28 +207,48 @@ class CategorizedPromptFormatter:
         # --- 2. Parse Input Prompt & Categorize ---
         categorized_tags = defaultdict(list)
         all_input_tags_original = set()
-        processed_input_tags = [] # Store (original_tag, base_tag)
+        processed_input_tags = [] # Store (original_tag, base_tag for matching)
 
         if prompt:
             raw_tags = prompt.split(input_delimiter)
             for raw_tag in raw_tags:
                 tag_original = raw_tag.strip() if strip_whitespace else raw_tag
-                if not tag_original: continue # Skip empty tags resulting from split
+                if not tag_original: continue
 
                 all_input_tags_original.add(tag_original)
                 original_parsed, base_parsed = parse_tag(tag_original, handle_weights)
 
-                lookup_tag = base_parsed if not case_sensitive_matching else base_parsed.lower()
-                processed_input_tags.append((original_parsed, lookup_tag))
-
+                # Prepare the tag used for dictionary lookups (case normalization)
+                lookup_key_base = base_parsed if case_sensitive_matching else base_parsed.lower()
+                processed_input_tags.append((original_parsed, lookup_key_base)) # Store original and the key base
 
         matched_original_tags = set()
-        for original_tag, lookup_tag in processed_input_tags:
-            categories = tag_to_categories_map.get(lookup_tag)
-            if categories:
-                for category in categories:
+        for original_tag, lookup_key_base in processed_input_tags:
+            found_categories = None
+
+            if match_underscores_spaces:
+                # Generate variants for lookup
+                variants_to_check = {
+                    lookup_key_base,
+                    lookup_key_base.replace('_', ' '),
+                    lookup_key_base.replace(' ', '_')
+                }
+                # Check each variant against the map
+                for variant in variants_to_check:
+                    categories = tag_to_categories_map.get(variant)
+                    if categories:
+                        found_categories = categories
+                        break # Found a match, stop checking variants for this tag
+            else:
+                # Direct lookup if matching is disabled
+                found_categories = tag_to_categories_map.get(lookup_key_base)
+
+            # If categories were found (using either direct or variant matching)
+            if found_categories:
+                for category in found_categories:
+                    # IMPORTANT: Append the ORIGINAL tag (with weights etc.)
                     categorized_tags[category].append(original_tag)
-                matched_original_tags.add(original_tag) # Mark as matched if found in *any* category
+                matched_original_tags.add(original_tag) # Mark the ORIGINAL tag as matched
 
         # --- 3. Process Template ---
         formatted_output_string = output_template
