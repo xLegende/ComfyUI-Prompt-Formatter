@@ -4,7 +4,7 @@ A custom node for ComfyUI that allows you to filter and restructure text prompts
 
 This node takes a standard comma-separated prompt, categorizes each tag according to your definitions, and then rebuilds the prompt based on a template you provide. It's useful for enforcing prompt structure, extracting specific concepts, or reordering elements dynamically.
 
-![Example Node UI (Conceptual - Actual UI may vary slightly)](placeholder_image.png)
+![Example Node UI (Conceptual - Actual UI may vary slightly)](custom_node.png)
 
 ## Features
 
