@@ -12,13 +12,11 @@ try:
     import yaml
 except ImportError:
     print("PyYAML is not installed. Please run install.py or install it manually.", file=sys.stderr)
-    # Optionally, try to run install.py automatically if possible,
-    # but this can be complex depending on environment. Best to rely on user action.
-    # raise ImportError("PyYAML is required but not installed. Run install.py.") from None
+    
 
 # --- Constants ---
 NODE_NAME = "Categorized Prompt Formatter"
-NODE_REPO = "ComfyUI-Prompt-Formatter" # For finding relative paths
+NODE_REPO = "ComfyUI-Prompt-Formatter" 
 
 # --- Helper Functions ---
 
@@ -38,7 +36,7 @@ def find_yaml_file(filename):
             return Path(filename)
         else:
             print(f"Warning: Absolute path specified but not found: {filename}")
-            return None # Explicit absolute path not found
+            return None 
 
     # 2. Check relative to the custom node's directory
     node_dir = get_node_directory()
@@ -70,7 +68,7 @@ def find_yaml_file(filename):
                          return input_dir_path
                  break # Stop searching up
              parent = search_dir.parent
-             if parent == search_dir: break # Reached root
+             if parent == search_dir: break 
              search_dir = parent
 
     except Exception as e:
@@ -170,7 +168,7 @@ class CategorizedPromptFormatter:
 
     def format_prompt(self, prompt, category_definition_file, output_template,
                       input_delimiter=",", output_delimiter=", ", strip_whitespace=True,
-                      case_sensitive_matching=False, handle_weights=True,
+                      case_sensitive_matching=False, match_underscores_spaces=True, handle_weights=True,
                       unmatched_tag_handling="discard"):
 
         # --- 1. Load Category Definitions ---
