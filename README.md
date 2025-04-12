@@ -4,7 +4,7 @@ A custom node for ComfyUI that allows you to filter and restructure text prompts
 
 This node takes a standard comma-separated prompt, categorizes each tag according to your definitions, and then rebuilds the prompt based on a template you provide. It's useful for enforcing prompt structure, extracting specific concepts, or reordering elements dynamically.
 
-![Example Node UI (Conceptual - Actual UI may vary slightly)](placeholder_image.png)
+![Example Node UI](custom_node.png)
 
 ## Features
 
@@ -62,7 +62,7 @@ The node "📝 Categorized Prompt Formatter" should now appear under the "text/f
     *   `category_definition_file`: Enter the name (e.g., `my_categories.yaml`) or full path to your YAML file. The node will search relative to itself, in `ComfyUI/input/`, and absolute paths.
     *   `output_template`: Define your desired output structure using `<|category_name|>` placeholders. Example: `<|quality|>, <|character_num|>, <|eyes|>, <|clothing|>, <|setting|>`
     *   Adjust delimiters, case sensitivity, weight handling, and unmatched tag handling as needed.
-	*   `match_underscores_spaces` (Boolean, default: True): If enabled, the node will try to match input tags against YAML definitions by checking variants with underscores swapped for spaces (e.g., input `red_eyes` can match YAML `red eyes`, and vice-versa). The original format of the input tag is kept for the output string.
+    *   `match_underscores_spaces` (Boolean, default: True): If enabled, the node will try to match input tags against YAML definitions by checking variants with underscores swapped for spaces (e.g., input `red_eyes` can match YAML `red eyes`, and vice-versa). The original format of the input tag is kept for the output string.
 5.  **Connect Output:** Connect the `formatted_prompt` output to the next node in your workflow (e.g., a CLIP Text Encode node). Use the optional `rejected_prompt` output for debugging or alternative workflows.
 
 ## Example
