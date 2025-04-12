@@ -1,0 +1,112 @@
+# /ComfyUI-Prompt-Formatter/prompt_categories.yaml
+# Example category definitions for the Categorized Prompt Formatter node.
+
+# --- Quality Tags ---
+quality:
+  - masterpiece
+  - best quality
+  - high quality
+  - absurdres
+  - highres
+  - ultra detailed
+
+# --- Style Tags ---
+style:
+  - photorealistic
+  - photograph
+  - anime style
+  - manga style
+  - illustration
+  - concept art
+  - watercolor
+  - oil painting
+
+# --- Character Basics ---
+character_num:
+  - 1girl
+  - 1boy
+  - 2girls
+  - solo
+  - multiple boys
+
+# --- Appearance Details ---
+eyes:
+  - blue eyes
+  - green eyes
+  - brown eyes
+  - red eyes
+  - heterochromia
+  - glowing eyes
+  - closed eyes
+
+hair_color:
+  - blonde hair
+  - brown hair
+  - black hair
+  - red hair
+  - pink hair
+  - silver hair
+
+hair_style:
+  - long hair
+  - short hair
+  - medium hair
+  - ponytail
+  - twintails
+  - bob cut
+  - messy hair
+
+# --- General Person Details 
+person_details:
+  - blue eyes
+  - red eyes
+  - blonde hair
+  - long hair
+  - smiling
+  - looking at viewer
+  - serious expression
+  - open mouth
+
+# --- Clothing ---
+clothing:
+  - dress
+  - red dress
+  - blue shirt
+  - t-shirt
+  - jeans
+  - skirt
+  - school uniform
+  - jacket
+  - hoodie
+  - hat
+  - glasses
+
+# --- Actions ---
+actions:
+  - smiling
+  - looking at viewer
+  - running
+  - sitting
+  - standing
+  - lying down
+  - holding object
+
+# --- Setting/Background ---
+setting:
+  - outdoors
+  - indoors
+  - nature
+  - forest
+  - city
+  - street
+  - room
+  - white background
+  - simple background
+  - detailed background
+
+# --- NSFW Example (Illustrative - Use Responsibly) ---
+# nsfw_body:
+#   - large breasts
+#   - small breasts
+#   - nude
+#   - explicit
