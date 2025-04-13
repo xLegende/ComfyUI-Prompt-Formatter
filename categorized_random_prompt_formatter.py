@@ -133,8 +133,7 @@ class CategorizedRandomPromptFormatter:
                       ):
 
         # --- 1. Handle Seed ---
-        if seed == 0:
-            # Generate a random seed if 0 is provided
+        if seed == -1:
             used_seed = random.randint(0, 0xffffffffffffffff)
         else:
             used_seed = seed
