@@ -296,13 +296,9 @@ tops:
   - blazer
   - vest
   - cardigan
-
-# --- Clothing ---
-clothing:
- $include:
-  - tops
- tags:
-  # Bottoms
+  
+# --- Bottoms ---
+bottoms:
   - pants
   - jeans
   - shorts
@@ -311,7 +307,9 @@ clothing:
   - pleated skirt
   - leggings
   - trousers
-  # Dresses/Suits
+ 
+# --- Dresses ---
+dresses:
   - dress
   - long dress
   - short dress
@@ -319,10 +317,53 @@ clothing:
   - evening gown
   - ball gown
   - cocktail dress
+  
+# --- Suits ---
+suits:
   - suit
   - business suit
   - tuxedo
   - jumpsuit
+  
+# --- Accessories ---
+accessories:
+  - hat
+  - cap
+  - beanie
+  - fedora
+  - witch hat
+  - helmet
+  - glasses
+  - sunglasses
+  - eyepatch
+  - mask
+  - scarf
+  - tie
+  - bowtie
+  - necklace
+  - choker
+  - earrings
+  - bracelet
+  - watch
+  - ring
+  - gloves
+  - mittens
+  - belt
+  - backpack
+  - bag
+  - purse
+  - ribbon
+  - bow
+  
+# --- Clothing ---
+clothing:
+ $include:
+  - tops
+  - bottoms
+  - dresses
+  - suits
+  - accessories
+ tags:
   # Outfits
   - school uniform
   - sailor uniform
@@ -354,34 +395,7 @@ clothing:
   - thighhighs
   - thighhigh
   - thigh boots
-  # Accessories
-  - hat
-  - cap
-  - beanie
-  - fedora
-  - witch hat
-  - helmet
-  - glasses
-  - sunglasses
-  - eyepatch
-  - mask
-  - scarf
-  - tie
-  - bowtie
-  - necklace
-  - choker
-  - earrings
-  - bracelet
-  - watch
-  - ring
-  - gloves
-  - mittens
-  - belt
-  - backpack
-  - bag
-  - purse
-  - ribbon
-  - bow
+
 
 # --- Actions ---
 actions:
