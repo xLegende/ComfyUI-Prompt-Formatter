@@ -280,10 +280,9 @@ person_details:
   - looking at viewer
   - serious expression
   - open mouth
-
-# --- Clothing ---
-clothing:
-  # Tops
+  
+ # --- Tops ---
+tops:
   - shirt
   - t-shirt
   - blouse
@@ -297,6 +296,12 @@ clothing:
   - blazer
   - vest
   - cardigan
+
+# --- Clothing ---
+clothing:
+ $include:
+  - tops
+ tags:
   # Bottoms
   - pants
   - jeans
