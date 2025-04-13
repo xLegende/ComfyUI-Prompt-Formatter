@@ -281,44 +281,75 @@ class CategorizedPromptFormatter:
                 matched_original_tags.add(original_tag) # Mark the ORIGINAL tag as matched
 
         # --- 3. Process Template ---
+        placeholder_regex = r"<\|([^:]+?)(?::(-?\d+))?\|>"
+
         formatted_output_string = ""
         already_added_tags = set()
         used_in_template_tags = set() # Tracks tags referenced by template (before dedup)
 
         result_parts = []
         last_end = 0
-        for match in re.finditer(r"<\|(.*?)\|>|", output_template):
-            placeholder_content = match.group(1)
+        # Use the updated regex with finditer
+        for match in re.finditer(placeholder_regex, output_template):
+            category_name = match.group(1).strip()
+            limit_str = match.group(2) # Captures signed number string (e.g., "5", "-3") or None
             start, end = match.span()
+
+            # Append the literal text segment before the placeholder
             result_parts.append(output_template[last_end:start])
 
-            if placeholder_content:
-                category_name = placeholder_content.strip()
-                # Use the categorized_tags dict built earlier
-                tags_for_category = categorized_tags.get(category_name, [])
+            limit = None
+            if limit_str:
+                try:
+                    limit = int(limit_str)
+                except ValueError:
+                    print(f"Warning: Invalid limit format '{limit_str}' for category '{category_name}'. Ignoring limit.")
+                    limit = None # Revert to no limit on error
 
-                if tags_for_category:
-                    # Mark all tags associated with this placeholder as 'used' by the template
-                    used_in_template_tags.update(tags_for_category)
+            # Get the list of tags associated with this category name from the input prompt
+            tags_for_category = categorized_tags.get(category_name, [])
+            tags_to_process = [] # Initialize empty
 
-                    tags_to_join = []
-                    if disable_duplicates:
-                        for tag in tags_for_category:
-                            if tag not in already_added_tags:
-                                tags_to_join.append(tag)
-                                already_added_tags.add(tag) # Mark as added
-                    else:
-                        tags_to_join = tags_for_category
-                        # already_added_tags.update(tags_to_join) # Optional
+            # --- Apply Slicing Logic Based on Limit Sign ---
+            if limit is None:
+                # No limit specified, take all
+                tags_to_process = tags_for_category
+            elif limit == 0:
+                # Limit is zero, take none
+                tags_to_process = []
+            elif limit > 0:
+                # Positive limit: take the first N tags
+                tags_to_process = tags_for_category[:limit]
+            else: # limit < 0
+                # Negative limit: take the last N (abs(limit)) tags
+                tags_to_process = tags_for_category[limit:] 
 
-                    if tags_to_join:
-                         joined_tags = output_delimiter.join(tags_to_join)
-                         result_parts.append(joined_tags)
+            # --- Process the selected tags ---
+            if tags_to_process:
+                # Mark only the tags we are potentially using (after limit/slicing) as 'used'
+                used_in_template_tags.update(tags_to_process)
+
+                tags_to_join = []
+                if disable_duplicates:
+                    # Filter the selected list against already added tags
+                    for tag in tags_to_process:
+                        if tag not in already_added_tags:
+                            tags_to_join.append(tag)
+                            already_added_tags.add(tag) # Mark as added
+                else:
+                    # Use all tags from the (potentially sliced) list
+                    tags_to_join = tags_to_process
+                    # already_added_tags.update(tags_to_join) # Optional if disable_duplicates is False
+
+                if tags_to_join:
+                     joined_tags = output_delimiter.join(tags_to_join)
+                     result_parts.append(joined_tags)
 
             last_end = end
+
+        # Append any remaining literal text after the last placeholder
         result_parts.append(output_template[last_end:])
         formatted_output_string = "".join(result_parts)
-
 
         # --- 4. Handle Unmatched Tags ---
         # This section remains the same
