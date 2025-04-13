@@ -62,6 +62,45 @@ negative:
   - missing fingers
   - cropped
 
+# --- Numbers ---
+numbers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 0
+  - one
+  - two
+  - three
+  - four
+  - five
+  - six
+  - seven
+  - eight
+  - nine
+  - zero
+
+# --- Colors ---
+colors:
+  - red
+  - green
+  - blue
+  - yellow
+  - orange
+  - purple
+  - violet
+  - pink
+  - brown
+  - black
+  - white
+  - grey
+  - gray
+
 # --- Style Tags ---
 style:
   - photorealistic
@@ -156,9 +195,166 @@ character_type:
   - monster girl
   - creature
   - animal character
+  
+# --- Animals ---
+animals:
+  # Mammals
+  - dog
+  - cat
+  - wolf
+  - fox
+  - lion
+  - tiger
+  - bear
+  - deer
+  - horse
+  - rabbit
+  - squirrel
+  - mouse
+  - bat
+  # Birds
+  - bird
+  - eagle
+  - hawk
+  - owl
+  - crow
+  - raven
+  - pigeon
+  - dove
+  - sparrow
+  # Reptiles/Amphibians
+  - snake
+  - lizard
+  - frog
+  - turtle
+  # Fish/Aquatic
+  - fish
+  - shark
+  - whale
+  - dolphin
+  - octopus
+  - crab
+  # Insects/Arachnids
+  - insect
+  - butterfly
+  - bee
+  - spider
+  - beetle
+  # Mythical
+  - dragon
+  - griffin
+  - unicorn
+  - phoenix
+  - mermaid
+  
+
+# --- Genre ---
+genre:
+  - Fantasy
+  - High Fantasy
+  - Urban Fantasy
+  - Dark Fantasy
+  - Science Fiction
+  - Sci-Fi
+  - Hard Sci-Fi
+  - Space Opera
+  - Cyberpunk
+  - Steampunk
+  - Biopunk
+  - Post-Apocalyptic
+  - Dystopian
+  - Utopian
+  - Horror
+  - Cosmic Horror
+  - Body Horror
+  - Slasher
+  - Psychological Horror
+  - Thriller
+  - Mystery
+  - Crime
+  - Noir
+  - Romance
+  - Adventure
+  - Historical Fiction
+  - Western
+  - Slice of Life
+  - Comedy
+  - Drama
+  - Satire
+  - Magical Realism
+  - Superhero
+  
+# --- Vehicles ---
+vehicles:
+  - car
+  - sports car
+  - truck
+  - van
+  - bus
+  - motorcycle
+  - scooter
+  - bicycle
+  - train
+  - subway
+  - airplane
+  - jet
+  - helicopter
+  - boat
+  - ship
+  - yacht
+  - submarine
+  - spaceship
+  - starship
+  - mech
+  - tank
+  - carriage
+  - hovercraft
+  
+# --- Food ---
+foods:
+  - apple
+  - banana
+  - orange
+  - berries
+  - bread
+  - cake
+  - pie
+  - cookie
+  - candy
+  - chocolate
+  - cheese
+  - pizza
+  - pasta
+  - rice
+  - soup
+  - salad
+  - sandwich
+  - burger
+  - fries
+  - steak
+  - chicken
+  - fish (food)
+  - sushi
+  - ramen
+  
+# --- Drinks ---
+drinks:
+  - water
+  - juice
+  - milk
+  - soda
+  - coffee
+  - tea
+  - wine
+  - beer
+  - cocktail
+  - potion
+  - energy drink
 
 # --- Appearance Details ---
 eyes:
+  - eye
+  - eyes
   - blue eyes
   - green eyes
   - brown eyes
@@ -270,16 +466,186 @@ hair_style:
   - hairpin
   - headband
 
+# --- Expressions ---
+expressions:
+  - smiling
+  - laughing
+  - grinning
+  - sad
+  - crying
+  - angry
+  - furious
+  - surprised
+  - shocked
+  - scared
+  - fearful
+  - disgusted
+  - neutral expression
+  - serious expression
+  - thoughtful
+  - pensive
+  - bored
+  - tired
+  - sleepy
+  - smug
+  - mischievous
+  - playful
+  - flustered
+  - embarrassed
+  - determined
+  - confident
+  - curious
+  - confused
+  - pouting
+  - open mouth
+  - closed mouth
+  - :o
+  - :d
+  - ;)
+  - :p
+
 # --- General Person Details 
 person_details:
-  - blue eyes
-  - red eyes
-  - blonde hair
-  - long hair
-  - smiling
   - looking at viewer
-  - serious expression
-  - open mouth
+
+# --- Body Type ---
+body_details:
+  - muscular
+  - athletic build
+  - slender
+  - slim
+  - thin
+  - petite
+  - curvy
+  - chubby
+  - overweight
+  - tall
+  - short
+# --- Body Details ---
+body_details:
+ $include:
+  -body_details
+ tags:
+  - freckles
+  - scars
+  - tattoo
+  - body modification
+  - birthmark
+  - abs
+  - 
+  
+# --- Skin Details ---
+skin_details:
+  - pale skin
+  - fair skin
+  - light skin
+  - tanned skin
+  - olive skin
+  - brown skin
+  - dark skin
+  - ebony skin
+  - glowing skin
+  - smooth skin
+  - rough skin
+  - scales
+  - fur
+  - feathers
+  - metallic skin
+  - wet skin
+  - oily skin
+  - dry skin
+  
+# --- Objects/Items ---
+objects:
+  - book
+  - scroll
+  - map
+  - sword
+  - dagger
+  - axe
+  - hammer
+  - shield
+  - spear
+  - bow (weapon)
+  - arrow
+  - staff
+  - wand
+  - potion bottle
+  - crystal
+  - orb
+  - amulet
+  - ring (item)
+  - key
+  - lantern
+  - candle
+  - torch
+  - gun
+  - rifle
+  - pistol
+  - laser gun
+  - phone
+  - smartphone
+  - tablet
+  - laptop
+  - computer
+  - tool
+  - wrench
+  - screwdriver
+  - cup
+  - mug
+  - plate
+  - bottle
+  - musical instrument
+  - guitar
+  - violin
+  - piano
+  - flute
+  - drum
+  - ball
+  - flower
+  - backpack
+  - suitcase
+
+# --- Character Role/Archetype ---
+character_role:
+  - warrior
+  - knight
+  - soldier
+  - mage
+  - wizard
+  - witch
+  - sorcerer
+  - cleric
+  - priest
+  - healer
+  - rogue
+  - thief
+  - assassin
+  - ranger
+  - archer
+  - bard
+  - musician
+  - dancer
+  - artist
+  - scholar
+  - scientist
+  - engineer
+  - doctor
+  - nurse
+  - merchant
+  - blacksmith
+  - farmer
+  - king
+  - queen
+  - prince
+  - princess
+  - noble
+  - peasant
+  - adventurer
+  - explorer
+  - pilot
+  - detective
+  - spy
   
  # --- Tops ---
 tops:
@@ -355,16 +721,21 @@ accessories:
   - ribbon
   - bow
   
-# --- Clothing ---
-clothing:
- $include:
-  - tops
-  - bottoms
-  - dresses
-  - suits
-  - accessories
- tags:
-  # Outfits
+# --- Footwear ---
+footwear:
+  - shoes
+  - sneakers
+  - boots
+  - high heels
+  - sandals
+  - socks
+  - stockings
+  - thighhighs
+  - thighhigh
+  - thigh boots
+ 
+# --- Outfits ---
+outfits:
   - school uniform
   - sailor uniform
   - gym uniform
@@ -384,17 +755,22 @@ clothing:
   - yukata
   - bodysuit
   - black bodysuit
-  # Footwear
-  - shoes
-  - sneakers
-  - boots
-  - high heels
-  - sandals
-  - socks
-  - stockings
-  - thighhighs
-  - thighhigh
-  - thigh boots
+  - blue bodysuit
+  - white bodysuit
+  - red bodysuit
+ 
+# --- Clothing ---
+clothing:
+ $include:
+  - tops
+  - bottoms
+  - dresses
+  - suits
+  - accessories
+  - footwear
+  - outfits
+ tags:
+  - clothing
 
 
 # --- Actions ---
@@ -526,9 +902,8 @@ setting:
   - foggy
   - windy
   
-# --- Camera & Composition ---
-camera:
-  # Shot Type
+# --- Shot Type ---
+shot_type:
   - close-up shot
   - medium shot
   - full shot
@@ -539,7 +914,9 @@ camera:
   - headshot
   - upper body
   - full body
-  # Angle
+  
+# --- Angle ---
+angle:
   - eye level shot
   - high angle shot
   - low angle shot
@@ -547,15 +924,9 @@ camera:
   - overhead shot
   - worm's eye view
   - pov (point of view)
-  # Lens/Focus
-  - wide angle lens
-  - telephoto lens
-  - fisheye lens
-  - depth of field
-  - shallow depth of field
-  - rack focus
-  - soft focus
-  # Lighting
+  
+# --- Lighting ---
+lighting:
   - cinematic lighting
   - volumetric lighting
   - dramatic lighting
@@ -570,6 +941,22 @@ camera:
   - candle light
   - neon lights
   - lens flare
+  
+# --- Camera & Composition ---
+camera:
+ $include:
+  - shot_type
+  - angle
+  - lighting
+ tags:
+  # Lens/Focus
+  - wide angle lens
+  - telephoto lens
+  - fisheye lens
+  - depth of field
+  - shallow depth of field
+  - rack focus
+  - soft focus
   # Composition
   - rule of thirds
   - centered composition
