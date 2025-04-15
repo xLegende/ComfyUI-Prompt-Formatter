@@ -509,7 +509,7 @@ person_details:
   - looking at viewer
 
 # --- Body Type ---
-body_details:
+body_type:
   - muscular
   - athletic build
   - slender
@@ -521,10 +521,11 @@ body_details:
   - overweight
   - tall
   - short
+  
 # --- Body Details ---
 body_details:
  $include:
-  -body_details
+  - body_type
  tags:
   - freckles
   - scars
@@ -532,7 +533,6 @@ body_details:
   - body modification
   - birthmark
   - abs
-  - 
   
 # --- Skin Details ---
 skin_details:
