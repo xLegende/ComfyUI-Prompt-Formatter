@@ -63,7 +63,7 @@ negative:
   - cropped
 
 # --- Numbers ---
-numbers:
+number:
   - 1
   - 2
   - 3
@@ -86,7 +86,7 @@ numbers:
   - zero
 
 # --- Colors ---
-colors:
+color:
   - red
   - green
   - blue
@@ -197,7 +197,7 @@ character_type:
   - animal character
   
 # --- Animals ---
-animals:
+animal:
   # Mammals
   - dog
   - cat
@@ -285,7 +285,7 @@ genre:
   - Superhero
   
 # --- Vehicles ---
-vehicles:
+vehicle:
   - car
   - sports car
   - truck
@@ -311,7 +311,7 @@ vehicles:
   - hovercraft
   
 # --- Food ---
-foods:
+food:
   - apple
   - banana
   - orange
@@ -338,7 +338,7 @@ foods:
   - ramen
   
 # --- Drinks ---
-drinks:
+drink:
   - water
   - juice
   - milk
@@ -467,7 +467,7 @@ hair_style:
   - headband
 
 # --- Expressions ---
-expressions:
+expression:
   - smiling
   - laughing
   - grinning
@@ -556,7 +556,7 @@ skin_details:
   - dry skin
   
 # --- Objects/Items ---
-objects:
+object:
   - book
   - scroll
   - map
@@ -735,7 +735,7 @@ footwear:
   - thigh boots
  
 # --- Outfits ---
-outfits:
+outfit:
   - school uniform
   - sailor uniform
   - gym uniform
@@ -768,13 +768,13 @@ clothing:
   - suits
   - accessories
   - footwear
-  - outfits
+  - outfit
  tags:
   - clothing
 
 
 # --- Actions ---
-actions:
+action:
   - standing
   - sitting
   - lying down
