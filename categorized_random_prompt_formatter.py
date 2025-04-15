@@ -116,7 +116,7 @@ class CategorizedRandomPromptFormatter:
                     "multiline": True,
                     "default": "<|quality:1|>, <|character_num:1|>, <|person_details:3|>, <|clothing:1|>, <|setting:1|>, <|style:1|>"
                 }),
-                "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+                "seed": ("INT", {"default": -1, "min": -1, "max": 0xffffffffffffffff}),
             },
             "optional": {
                  "output_delimiter": ("STRING", {"default": ", "}),
