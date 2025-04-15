@@ -1,0 +1,15 @@
+[project]
+name = "prompt-formatter"
+description = "This repository contains custom nodes for ComfyUI designed to help structure, filter, and generate text prompts using categorized tag definitions stored in a YAML file."
+version = "1.0.0"
+license = {file = "LICENSE"}
+dependencies = ["# /ComfyUI-Prompt-Formatter/requirements.txt", "PyYAML>=5.1"]
+
+[project.urls]
+Repository = "https://github.com/xLegende/ComfyUI-Prompt-Formatter"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Prompt-Formatter"
+Icon = ""
