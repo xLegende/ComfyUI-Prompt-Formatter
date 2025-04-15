@@ -23,28 +23,40 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 Both nodes rely on a YAML file to define which tags belong to which categories. An example file (`prompt_categories.yaml`) is included in this repository.
 
 **Format:**
-
-*   **Basic:**
+*   **Basic:** ...
+*   **Hierarchical Inclusion (`$category`):** A category list can include all tags from another category by adding `$other_category_name` as an item.
     ```yaml
-    category_name:
-      - tag1
-      - tag2
-      - another tag
+    list_one:
+      - tag_a
+    list_two:
+      - $list_one # Includes tag_a
+      - tag_b
     ```
-*   **Hierarchical Inclusion (`$include`):** A category can include all tags from other categories using the `$include` directive. It can also have its own specific tags listed under the `tags:` key.
+*   **Inline Tag Expansion (`prefix $category suffix`):** You can generate tags combinatorially within a string. The node finds the first `$category_name` reference in the string, resolves all tags for that category, and substitutes each one back into the string pattern.
+    ```yaml
+    colors:
+      - red
+      - blue
+    items:
+      - ball
+      - cube
+    colored_items:
+      - $colors $items # Expands to: red ball, blue ball, red cube, blue cube
+      - shiny $colors sphere # Expands to: shiny red sphere, shiny blue sphere
+    # Note: Currently supports only one $category reference per line for expansion.
+    #       '$category' at the start of a line with no other text is treated as a full list include.
+    ```
+*   **Dictionary Includes (`$include`/`tags:`):** The older dictionary format for includes is also supported for backward compatibility
     ```yaml
     eyes:
       - blue eyes
       - red eyes
-
     person_details:
       $include: # Inherit from 'eyes'
         - eyes
       tags: # Add tags specific to 'person_details'
         - smiling
         - freckles
-
-    # Using '<|person_details|>' will now consider tags from 'eyes' AND 'smiling', 'freckles'.
     ```
 
 **File Location:**
