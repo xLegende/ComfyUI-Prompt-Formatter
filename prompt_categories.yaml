@@ -100,6 +100,10 @@ color:
   - white
   - grey
   - gray
+  - hazel
+  - amber
+  - silver
+  - aqua
 
 # --- Style Tags ---
 style:
@@ -353,23 +357,10 @@ drink:
 
 # --- Appearance Details ---
 eyes:
+  - $color eye
+  - $color eyes
   - eye
   - eyes
-  - blue eyes
-  - green eyes
-  - brown eyes
-  - black eyes
-  - hazel eyes
-  - grey eyes
-  - amber eyes
-  - red eyes
-  - pink eyes
-  - purple eyes
-  - yellow eyes
-  - orange eyes
-  - white eyes
-  - silver eyes
-  - aqua eyes
   - heterochromia
   - different colored eyes
   - glowing eyes

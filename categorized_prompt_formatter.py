@@ -93,63 +93,84 @@ def clean_output_string(text, delimiter=", "):
     return text
 
 # --- YAML Include Resolution Helper ---
-def resolve_category_tags(category_name, yaml_data, resolved_cache, recursion_guard=None):
+def resolve_category_tags(category_name, yaml_data, resolved_cache, recursion_guard=None): # Or _random suffix
     """
-    Recursively resolves tags for a category, handling $include directives.
+    Recursively resolves tags for a category, handling $include directives,
+    $category list includes, and inline $category expansion within strings.
     Returns a set of unique tags (strings) for the category.
     """
-    category_name = str(category_name).strip() # Ensure consistent key type
-    if recursion_guard is None:
-        recursion_guard = set()
+    category_name = str(category_name).strip()
+    if recursion_guard is None: recursion_guard = set()
+    # Basic recursion depth limit as extra safety
+    if len(recursion_guard) > 20:
+        print(f"Warning: Recursion depth limit exceeded processing '{category_name}'. Returning empty set.")
+        return set()
     if category_name in recursion_guard:
-        print(f"Warning: Circular dependency detected involving category '{category_name}'. Skipping recursive include.")
+        print(f"Warning: Circular dependency detected involving category '{category_name}'.")
         return set()
-    if category_name in resolved_cache:
-        return resolved_cache[category_name]
+    if category_name in resolved_cache: return resolved_cache[category_name]
     if category_name not in yaml_data:
-        print(f"Warning: Included category '{category_name}' not found in YAML data.")
+        # Don't warn here, allows optional categories in references
         return set()
 
-    recursion_guard.add(category_name) # Mark as visiting
-
+    recursion_guard.add(category_name)
     category_data = yaml_data[category_name]
     final_tags = set()
 
     if isinstance(category_data, list):
-        # Simple list of tags
-        final_tags.update(str(tag).strip() for tag in category_data if str(tag).strip())
+        for item in category_data:
+            item_str = str(item).strip()
+            if not item_str: continue
 
+            # Check for full category include first (starts with $, no spaces, alphanumeric name)
+            is_full_include = item_str.startswith('$') and len(item_str) > 1 and ' ' not in item_str and item_str[1:].replace('_', '').isalnum()
+
+            if is_full_include:
+                # --- Handle Full Category Include: $other_category ---
+                included_category = item_str[1:]
+                final_tags.update(resolve_category_tags(included_category, yaml_data, resolved_cache, recursion_guard.copy())) # Use correct function name
+            else:
+                # --- Handle Inline Expansion: "prefix $category suffix" ---
+                # Use regex to find the first $word pattern
+                # Limit to one expansion per string for simplicity
+                match = re.search(r'\$(\w+)', item_str) # \w+ matches letters, numbers, underscore
+
+                if match:
+                    ref_category_name = match.group(1)
+                    placeholder = match.group(0) # The full '$word' matched
+
+                    # Resolve the referenced category's tags
+                    resolved_ref_tags = resolve_category_tags(ref_category_name, yaml_data, resolved_cache, recursion_guard.copy())
+
+                    if not resolved_ref_tags:
+                        print(f"Warning: Inline reference ${ref_category_name} in '{item_str}' resolved to an empty set or category not found. Skipping expansion for this item.")
+                    else:
+                        # Substitute each resolved tag into the original string pattern
+                        for resolved_tag in resolved_ref_tags:
+                            # Perform replacement. Use count=1 if placeholder could appear multiple times.
+                            new_tag = item_str.replace(placeholder, str(resolved_tag).strip(), 1)
+                            final_tags.add(new_tag)
+                else:
+                    # No $category reference found, treat as a literal tag
+                    final_tags.add(item_str)
+
+    # --- Keep supporting the old dictionary format ---
     elif isinstance(category_data, dict):
-        # Dictionary format, check for $include and direct tags
-        # Check for $include directive first
         if INCLUDE_DIRECTIVE in category_data:
             includes = category_data[INCLUDE_DIRECTIVE]
             include_list = []
-            if isinstance(includes, list):
-                include_list = [str(inc).strip() for inc in includes if str(inc).strip()]
-            elif isinstance(includes, str):
-                 include_list = [includes.strip()] if includes.strip() else []
-
+            if isinstance(includes, list): include_list = [str(inc).strip() for inc in includes if str(inc).strip()]
+            elif isinstance(includes, str): include_list = [includes.strip()] if includes.strip() else []
             for included_category in include_list:
-                # Pass a copy of the guard to prevent siblings affecting each other's cycle detection
                 final_tags.update(resolve_category_tags(included_category, yaml_data, resolved_cache, recursion_guard.copy()))
-
-        # Check for direct tags (e.g., under 'tags:' key or others if structure allows)
         if TAGS_KEY in category_data and isinstance(category_data[TAGS_KEY], list):
              final_tags.update(str(tag).strip() for tag in category_data[TAGS_KEY] if str(tag).strip())
-        # Optional: Handle case where dict has no $include or 'tags', maybe treat other keys?
-        # else:
-        #     print(f"Warning: Dict category '{category_name}' lacks '{INCLUDE_DIRECTIVE}' or '{TAGS_KEY}'. Tags ignored.")
-        #     pass
 
     else:
-        # Handle cases where a category definition is neither list nor dict (e.g., just a string)
-        print(f"Warning: Category '{category_name}' definition is not a list or dictionary. Ignoring.")
-
+        print(f"Warning: Category '{category_name}' definition ignored (not list or dictionary).")
 
     resolved_cache[category_name] = final_tags
-    # No need to remove from recursion_guard here as we pass copies down
-
+    # We DON'T remove from recursion_guard here because the cache handles it
     return final_tags
 
 
