@@ -18,30 +18,6 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 
 ---
 
-## Installation
-
-1.  **Clone the Repository:**
-    Navigate to your ComfyUI `custom_nodes` directory and clone this repository:
-    ```bash
-    cd ComfyUI/custom_nodes/
-    git clone https://github.com/xLegende/ComfyUI-Prompt-Formatter.git
-    ```
-
-2.  **Install Dependencies:**
-    This node requires the `PyYAML` library. Navigate into the cloned directory and run the installation script using the Python environment associated with your ComfyUI installation:
-    ```bash
-    cd ComfyUI-Prompt-Formatter
-    # Example (adjust path to your Python executable if needed):
-    # /path/to/your/ComfyUI/python_env/bin/python install.py
-    # Or if your system python is the one used by ComfyUI:
-    python install.py
-    ```
-
-3.  **Restart ComfyUI:**
-    Ensure ComfyUI is completely restarted to recognize the new nodes.
-
----
-
 ## The YAML Definitions File (`prompt_categories.yaml`)
 
 Both nodes rely on a YAML file to define which tags belong to which categories. An example file (`prompt_categories.yaml`) is included in this repository.
@@ -156,10 +132,6 @@ This node generates completely new, random prompts by selecting tags from your Y
 
 *   **Possible Result (`random_prompt`):** `"best quality, 1girl, long hair, twintails, outdoors"` (Specific tags depend on seed 42 and YAML content)
 *   **Result (`used_seed`):** `42`
-
-*   **If Seed = -1:**
-*   **Possible Result (`random_prompt`):** `"masterpiece, 2boys, short hair, ponytail, indoors"` (Different random result)
-*   **Result (`used_seed`):** (A large random integer)
 
 ---
 
