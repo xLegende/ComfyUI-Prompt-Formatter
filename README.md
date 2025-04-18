@@ -82,7 +82,7 @@ The nodes will search for the specified YAML file in this order:
 
 This node takes an existing prompt string, analyzes its tags against your YAML definitions, and reconstructs a new prompt based on your template, applying various filtering options.
 
-![Categorized Prompt Formatter Node UI](formatter_node.png)
+![Categorized Prompt Formatter Node UI](img/formatter_node.png)
 
 ### Inputs & Widgets
 
@@ -128,7 +128,7 @@ This node takes an existing prompt string, analyzes its tags against your YAML d
 
 This node generates completely new, random prompts by selecting tags from your YAML categories based on a template structure and a seed.
 
-![Categorized Random Prompt Formatter Node UI](random_node.png)
+![Categorized Random Prompt Formatter Node UI](img/random_node.png)
 
 ### Inputs & Widgets
 
@@ -159,7 +159,7 @@ This node generates completely new, random prompts by selecting tags from your Y
 
 This node inspects an input prompt and counts how many tags match specific targets, which can be literal tag strings or category names from your YAML file. It's useful for debugging prompts, verifying content, or understanding composition.
 
-![Categorized Prompt Analyzer Node UI](analyzer_node.png) 
+![Categorized Prompt Analyzer Node UI](img/analyzer_node.png) 
 
 ### Inputs & Widgets
 
