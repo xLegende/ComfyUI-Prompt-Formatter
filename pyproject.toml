@@ -12,4 +12,4 @@ Repository = "https://github.com/xLegende/ComfyUI-Prompt-Formatter"
 [tool.comfy]
 PublisherId = "xlegende"
 DisplayName = "ComfyUI-Prompt-Formatter"
-Icon = ""
+Icon = "https://avatars.githubusercontent.com/u/68666984"
