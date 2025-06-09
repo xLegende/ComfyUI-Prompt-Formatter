@@ -1,4 +1,4 @@
-# 📝🎲📊 ComfyUI Prompt Formatting & Analysis Nodes
+# 📝🎲📊📂 ComfyUI Prompt Formatting & Analysis Nodes
 
 This repository contains custom nodes for ComfyUI designed to help structure, filter, generate, and **analyze** text prompts using categorized tag definitions stored in a YAML file.
 
@@ -7,6 +7,7 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 1.  **📝 Categorized Prompt Formatter:** Filters and restructures an *existing* input prompt based on categories and a template. Preserves tag details like weights.
 2.  **🎲 Categorized Random Prompt Formatter:** *Generates* a new random prompt by sampling tags from categories defined in the YAML, using a template structure and a seed for reproducibility.
 3.  **📊 Categorized Prompt Analyzer:** *Analyzes* an input prompt to count occurrences of specific tags or tags belonging to specified categories.
+4.  **📂 Wildcard Importer:** A utility node that scans a directory of `.txt` wildcard files and converts them into a single, structured YAML file, making it easy to use existing wildcard collections with this node pack.
 
 ---
 
@@ -17,6 +18,7 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 *   **Inline Tag Expansion:** Generate combinatorial tags within the YAML itself (e.g., `$color eyes`).
 *   **Template-Driven Output (Formatter/Random):** Control the structure of the output prompt using simple placeholders like `<|category_name|>`.
 *   **Flexible Tag Handling:** Options for case sensitivity and matching tags regardless of underscores vs. spaces (e.g., `blue_eyes` vs `blue eyes`).
+*   **Wildcard Integration:** Use the **Wildcard Importer** node to automatically convert entire folders of standard `.txt` wildcards into a compatible YAML file.
 
 ---
 
@@ -203,6 +205,48 @@ This node inspects an input prompt and counts how many tags match specific targe
     non_existent_category: 0 []
     ```
 *   **Result (`unmatched_tags`):** `"1girl, solo"`
+
+---
+
+## 4. 📂 Wildcard Importer
+
+This utility node is designed to bridge the gap between this node pack and the vast ecosystem of existing wildcard `.txt` files. It scans a directory, reads the wildcard files, and converts them into a single, structured YAML file that the other nodes can use.
+
+![Wildcard Importer Node UI](img/importer_node.png) 
+
+### Self-Contained by Default
+
+To make the node pack easy to use out-of-the-box, the **Wildcard Importer** is configured with new defaults:
+
+*   **Default Wildcard Folder:** It defaults to looking for wildcards in a `wildcards/` subfolder *within this node pack's directory* (`ComfyUI/custom_nodes/ComfyUI-Prompt-Formatter/wildcards/`). You can place your `.txt` wildcard files here.
+*   **Default Output Location:** It saves the generated YAML file (e.g., `imported_wildcards.yaml`) directly inside this node pack's main directory.
+*   **Other Nodes' Defaults:** The Formatter, Random, and Analyzer nodes now default to using `imported_wildcards.yaml`, making it seamless to create a workflow pipeline.
+
+### Inputs & Widgets
+
+*   `wildcard_directory` (String): The path to the folder containing your `.txt` wildcard files.
+*   `output_yaml_file` (String): The name for the output YAML file to be saved within this node pack's directory.
+*   `wildcards_to_import` (String): A comma-separated list of wildcard filenames to import (without `.txt`). Use `*` to import all.
+*   `write_mode` (Dropdown): How to handle the output file if it already exists:
+    *   `Overwrite`: Deletes the existing file and creates a new one (Default).
+    *   `Merge (Skip Existing Categories)`: Adds new categories from wildcards, but skips any wildcard if a category with that name already exists in the YAML.
+    *   `Merge (Overwrite Existing Categories)`: Overwrites existing categories in the YAML with content from the corresponding wildcard file. Adds new ones.
+    *   `Merge (Append Unique Tags)`: Appends only new, unique tags from a wildcard file to an existing category in the YAML.
+*   `ignore_private_wildcards` (Boolean): If True, skips importing wildcard files that start with an underscore (`_`), which are often used as helpers (Default: True).
+
+### Outputs
+
+*   `output_yaml_path` (String): The full, absolute path to the generated YAML file. **This can be directly connected to the `category_definition_file` input of the other nodes.**
+*   `status_message` (String): A human-readable summary of the import operation.
+*   `files_processed_count` (Int): The number of wildcard files that were successfully imported.
+
+### Example Usage
+
+1.  Place your collection of `.txt` wildcards into the `ComfyUI/custom_nodes/ComfyUI-Prompt-Formatter/wildcards/` folder.
+2.  In ComfyUI, add a **📂 Wildcard Importer** node. Keep the default settings.
+3.  Add a **🎲 Categorized Random Prompt Formatter** node.
+4.  Connect the `output_yaml_path` from the Importer to the `category_definition_file` input of the Random Formatter.
+5.  Run the workflow. The Importer will create `imported_wildcards.yaml`, and the Random Formatter will immediately be able to use the newly imported categories to generate a random prompt.
 
 ---
 
