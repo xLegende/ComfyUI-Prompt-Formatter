@@ -134,7 +134,7 @@ class WildcardImporter:
         try:
             # Sort categories alphabetically for consistent output
             sorted_yaml_data = dict(sorted(yaml_data.items()))
-            with open(output_path, 'w', encoding='utf--8') as f:
+            with open(output_path, 'w', encoding='utf-8') as f:
                 yaml.dump(sorted_yaml_data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
             status_msg = f"Success! Processed {processed_count} wildcards. Added/updated {total_tags_added} tags in '{safe_output_filename}'."
             print(f"[Importer] {status_msg}")
