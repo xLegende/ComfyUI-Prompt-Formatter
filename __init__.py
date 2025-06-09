@@ -26,7 +26,7 @@ __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
 
 print("...")
 print("### Loading: ComfyUI-Prompt-Formatter ###")
-print("### Version: 1.4")
+print("### Version: 1.4.1")
 print(f"### Node: {NODE_NAME_FORMATTER} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_FORMATTER]}")
 print(f"### Node: {NODE_NAME_RANDOM} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_RANDOM]}")
 print(f"### Node: {NODE_NAME_ANALYZER} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_ANALYZER]}")
