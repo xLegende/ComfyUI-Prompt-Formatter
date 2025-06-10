@@ -1,281 +1,94 @@
-# /ComfyUI-Prompt-Formatter/categorized_random_prompt_formatter.py
+#/ComfyUI-Prompt-Formatter/categorized_random_prompt_formatter.py
 
 import yaml
 import re
-import os
-import sys
 import random
-from collections import defaultdict
-from pathlib import Path
+Local utility imports
 
-# --- Dependency Check ---
-try:
-    import yaml
-except ImportError:
-    print("PyYAML is not installed. Please run install.py or install it manually.", file=sys.stderr)
-
-# --- Constants ---
-NODE_NAME_RANDOM = "Categorized Random Prompt Formatter" # Specific name for this node
-INCLUDE_DIRECTIVE = "$include"
-TAGS_KEY = "tags"
-
-# --- Helper Functions (Copied/Adapted from previous node) ---
-
-def get_node_directory_random(): 
-    """Gets the directory path of the current node."""
-    return Path(__file__).parent
-
-def find_yaml_file_random(filename):
-    """Finds the YAML file (adapted naming)."""
-    if not filename: return None
-    if Path(filename).is_absolute():
-        if Path(filename).is_file(): return Path(filename)
-        else: print(f"Warning [RandomNode]: Absolute path specified but not found: {filename}"); return None
-    node_dir = get_node_directory_random()
-    relative_to_node = node_dir / filename
-    if relative_to_node.is_file(): return relative_to_node
-    try:
-        current_dir = Path.cwd()
-        input_dir = current_dir / 'input'
-        if input_dir.exists():
-             input_dir_path = input_dir / filename
-             if input_dir_path.is_file(): return input_dir_path
-        search_dir = node_dir
-        for _ in range(5):
-             input_dir = search_dir / 'input'
-             if input_dir.exists():
-                 input_dir_path = input_dir / filename
-                 if input_dir_path.is_file(): return input_dir_path
-             if (search_dir / 'ComfyUI').exists() or (search_dir / 'main.py').exists():
-                 input_dir = search_dir / 'input'
-                 if input_dir.exists():
-                     input_dir_path = input_dir / filename
-                     if input_dir_path.is_file(): return input_dir_path
-                 break
-             parent = search_dir.parent
-             if parent == search_dir: break
-             search_dir = parent
-    except Exception as e: print(f"Warning [RandomNode]: Error searching for ComfyUI input directory: {e}")
-    print(f"Warning [RandomNode]: YAML file '{filename}' not found as absolute, relative to node, or in input dir.")
-    return None
-
-def resolve_category_tags_random(category_name, yaml_data, resolved_cache, recursion_guard=None): # Or _random suffix
-    """
-    Recursively resolves tags for a category, handling $include directives,
-    $category list includes, and inline $category expansion within strings.
-    Returns a set of unique tags (strings) for the category.
-    """
-    category_name = str(category_name).strip()
-    if recursion_guard is None: recursion_guard = set()
-    # Basic recursion depth limit as extra safety
-    if len(recursion_guard) > 20:
-        print(f"Warning: Recursion depth limit exceeded processing '{category_name}'. Returning empty set.")
-        return set()
-    if category_name in recursion_guard:
-        print(f"Warning: Circular dependency detected involving category '{category_name}'.")
-        return set()
-    if category_name in resolved_cache: return resolved_cache[category_name]
-    if category_name not in yaml_data:
-        # Don't warn here, allows optional categories in references
-        return set()
-
-    recursion_guard.add(category_name)
-    category_data = yaml_data[category_name]
-    final_tags = set()
-
-    if isinstance(category_data, list):
-        for item in category_data:
-            item_str = str(item).strip()
-            if not item_str: continue
-
-            # Check for full category include first (starts with $, no spaces, alphanumeric name)
-            is_full_include = item_str.startswith('$') and len(item_str) > 1 and ' ' not in item_str and item_str[1:].replace('_', '').isalnum()
-
-            if is_full_include:
-                # --- Handle Full Category Include: $other_category ---
-                included_category = item_str[1:]
-                final_tags.update(resolve_category_tags_random(included_category, yaml_data, resolved_cache, recursion_guard.copy())) # Use correct function name
-            else:
-                # --- Handle Inline Expansion: "prefix $category suffix" ---
-                # Use regex to find the first $word pattern
-                # Limit to one expansion per string for simplicity
-                match = re.search(r'\$(\w+)', item_str) # \w+ matches letters, numbers, underscore
-
-                if match:
-                    ref_category_name = match.group(1)
-                    placeholder = match.group(0) # The full '$word' matched
-
-                    # Resolve the referenced category's tags
-                    resolved_ref_tags = resolve_category_tags_random(ref_category_name, yaml_data, resolved_cache, recursion_guard.copy())
-
-                    if not resolved_ref_tags:
-                        print(f"Warning: Inline reference ${ref_category_name} in '{item_str}' resolved to an empty set or category not found. Skipping expansion for this item.")
-                    else:
-                        # Substitute each resolved tag into the original string pattern
-                        for resolved_tag in resolved_ref_tags:
-                            # Perform replacement. Use count=1 if placeholder could appear multiple times.
-                            new_tag = item_str.replace(placeholder, str(resolved_tag).strip(), 1)
-                            final_tags.add(new_tag)
-                else:
-                    # No $category reference found, treat as a literal tag
-                    final_tags.add(item_str)
-
-    # --- Keep supporting the old dictionary format ---
-    elif isinstance(category_data, dict):
-        if INCLUDE_DIRECTIVE in category_data:
-            includes = category_data[INCLUDE_DIRECTIVE]
-            include_list = []
-            if isinstance(includes, list): include_list = [str(inc).strip() for inc in includes if str(inc).strip()]
-            elif isinstance(includes, str): include_list = [includes.strip()] if includes.strip() else []
-            for included_category in include_list:
-                final_tags.update(resolve_category_tags_random(included_category, yaml_data, resolved_cache, recursion_guard.copy()))
-        if TAGS_KEY in category_data and isinstance(category_data[TAGS_KEY], list):
-             final_tags.update(str(tag).strip() for tag in category_data[TAGS_KEY] if str(tag).strip())
-
-    else:
-        print(f"Warning: Category '{category_name}' definition ignored (not list or dictionary).")
-
-    resolved_cache[category_name] = final_tags
-    # We DON'T remove from recursion_guard here because the cache handles it
-    return final_tags
-
-def clean_output_string_random(text, delimiter=", "):
-    """Cleans up the final output string (adapted naming)."""
-    if not text: return ""
-    text = text.strip().strip(delimiter.strip()).strip()
-    delimiter_pattern = r'\s*' + re.escape(delimiter.strip()) + r'\s*'
-    text = re.sub(f'({delimiter_pattern})+', delimiter, text)
-    if text.startswith(delimiter): text = text[len(delimiter):].lstrip()
-    if text.endswith(delimiter.rstrip()): text = text[:-len(delimiter.rstrip())].rstrip()
-    return text
-
-# --- The Random Node Class ---
+from .prompt_formatter_utils import (
+find_yaml_file,
+clean_output_string,
+resolve_category_tags,
+INCLUDE_DIRECTIVE,
+TAGS_KEY
+)
 
 class CategorizedRandomPromptFormatter:
-    """
-    A ComfyUI node to generate random prompts by selecting tags from categories
-    defined in a YAML file, based on a template and a seed.
-    """
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "category_definition_file": ("STRING", {"default": "prompt_categories.yaml"}),
-                "output_template": ("STRING", {
-                    "multiline": True,
-                    "default": "<|quality:1|>, <|character_num:1|>, <|person_details:3|>, <|clothing:1|>, <|setting:1|>, <|style:1|>"
-                }),
-                "seed": ("INT", {"default": -1, "min": -1, "max": 0xffffffffffffffff}),
-            },
-            "optional": {
-                 "output_delimiter": ("STRING", {"default": ", "}),
-            }
-        }
+"""
+A ComfyUI node to generate random prompts from categories defined in a YAML file.
+"""
+NODE_NAME = "Categorized Random Prompt Formatter"
 
-    RETURN_TYPES = ("STRING", "INT")
-    RETURN_NAMES = ("random_prompt", "used_seed")
-    FUNCTION = "generate_prompt"
-    CATEGORY = "text/generation" 
+      
+@classmethod
+def INPUT_TYPES(cls):
+    return {
+        "required": {
+            "category_definition_file": ("STRING", {"default": "prompt_categories.yaml"}),
+            "output_template": ("STRING", {
+                "multiline": True,
+                "default": "<|quality:1|>, <|character:1|>, <|details:3|>, <|setting:1|>"
+            }),
+            "seed": ("INT", {"default": -1, "min": -1, "max": 0xffffffffffffffff}),
+        },
+        "optional": { "output_delimiter": ("STRING", {"default": ", "}) }
+    }
 
-    def generate_prompt(self, category_definition_file, output_template, seed,
-                      output_delimiter=", ",
-                      ):
+RETURN_TYPES = ("STRING", "INT")
+RETURN_NAMES = ("random_prompt", "used_seed")
+FUNCTION = "generate_prompt"
+CATEGORY = "text/generation" 
 
-        # --- 1. Handle Seed ---
-        if seed == -1:
-            used_seed = random.randint(0, 0xffffffffffffffff)
-        else:
-            used_seed = seed
-        # Initialize a dedicated random number generator for this execution
-        rng = random.Random(used_seed)
+def generate_prompt(self, category_definition_file, output_template, seed, output_delimiter=", "):
+    # --- 1. Handle Seed ---
+    used_seed = random.randint(0, 0xffffffffffffffff) if seed == -1 else seed
+    rng = random.Random(used_seed)
 
-        # --- 2. Load & Resolve Category Definitions ---
-        resolved_categories = {} # Store category_name -> set_of_tags
-        yaml_path = find_yaml_file_random(category_definition_file)
-        raw_yaml_data = None
+    # --- 2. Load & Resolve Categories ---
+    resolved_categories = {}
+    yaml_path = find_yaml_file(category_definition_file, self.NODE_NAME)
+    raw_yaml_data = None
 
-        if yaml_path and yaml_path.exists():
-            try:
-                with open(yaml_path, 'r', encoding='utf-8') as f:
-                    raw_yaml_data = yaml.safe_load(f)
-                if not isinstance(raw_yaml_data, dict):
-                     print(f"Warning [RandomNode]: YAML file '{yaml_path}' is not a dictionary. Cannot process.")
-                     raw_yaml_data = None
-            except Exception as e:
-                 print(f"Error [RandomNode]: Loading YAML file {yaml_path}: {e}")
+    if yaml_path:
+        try:
+            with open(yaml_path, 'r', encoding='utf-8') as f:
+                raw_yaml_data = yaml.safe_load(f)
+            if not isinstance(raw_yaml_data, dict):
+                 print(f"Warning [{self.NODE_NAME}]: YAML file '{yaml_path}' is not a dictionary.")
+                 raw_yaml_data = None
+        except Exception as e:
+             print(f"Error [{self.NODE_NAME}]: Loading YAML file {yaml_path}: {e}")
 
-        if raw_yaml_data:
-            resolved_tags_cache = {}
-            all_category_names = list(raw_yaml_data.keys())
-            for category_name in all_category_names:
-                 if str(category_name).strip() != INCLUDE_DIRECTIVE and str(category_name).strip() != TAGS_KEY:
-                    # Resolve tags for each category using the helper
-                    resolved_categories[str(category_name).strip()] = resolve_category_tags_random(
-                        category_name, raw_yaml_data, resolved_tags_cache
-                    )
-        else:
-            print(f"Warning [RandomNode]: Category file '{category_definition_file}' not found or empty. Cannot generate prompt.")
-            return ("", used_seed) # Return empty if no categories loaded
+    if raw_yaml_data:
+        cache = {}
+        for cat_name in list(raw_yaml_data.keys()):
+            if str(cat_name).strip() not in [INCLUDE_DIRECTIVE, TAGS_KEY]:
+                resolved_categories[str(cat_name).strip()] = resolve_category_tags(cat_name, raw_yaml_data, cache, self.NODE_NAME)
+    else:
+        return ("", used_seed)
 
-        # --- 3. Process Template and Generate Random Tags ---
-        # Regex to capture category name (group 1) and optional count (group 2)
-        # Only positive counts are meaningful here. Default count is 1.
-        placeholder_regex = r"<\|([^:]+?)(?::(\d+))?\|>"
+    # --- 3. Process Template & Generate Prompt ---
+    result_parts = []
+    last_end = 0
+    for match in re.finditer(r"<\|([^:]+?)(?::(\d+))?\|>", output_template):
+        cat_name, count_str, start, end = match.group(1).strip(), match.group(2), *match.span()
+        result_parts.append(output_template[last_end:start])
+        
+        num_to_pick = int(count_str) if count_str and int(count_str) >= 0 else 1
+        if num_to_pick > 0:
+            available_tags = list(resolved_categories.get(cat_name, []))
+            if available_tags:
+                sample_count = min(num_to_pick, len(available_tags))
+                tags_to_join = rng.sample(available_tags, sample_count)
+                result_parts.append(output_delimiter.join(tags_to_join))
+            else:
+                print(f"Warning [{self.NODE_NAME}]: Category '{cat_name}' not found or empty.")
+        
+        last_end = end
+    
+    result_parts.append(output_template[last_end:])
+    final_prompt = clean_output_string("".join(result_parts), output_delimiter)
+    
+    return (final_prompt, used_seed)
 
-        generated_prompt_string = ""
-        result_parts = []
-        last_end = 0
-
-        for match in re.finditer(placeholder_regex, output_template):
-            category_name = match.group(1).strip()
-            count_str = match.group(2) # Optional count N
-            start, end = match.span()
-
-            # Append literal text before placeholder
-            result_parts.append(output_template[last_end:start])
-
-            # Determine the number of tags to pick (default 1)
-            num_to_pick = 1 # Default
-            if count_str:
-                try:
-                    count = int(count_str)
-                    if count >= 0: # Allow 0 to explicitly pick none
-                       num_to_pick = count
-                    else:
-                        print(f"Warning [RandomNode]: Negative count '{count_str}' for category '{category_name}' invalid. Defaulting to 1.")
-                        num_to_pick = 1 # Default to 1 if negative
-                except ValueError:
-                    print(f"Warning [RandomNode]: Invalid count format '{count_str}' for category '{category_name}'. Defaulting to 1.")
-                    num_to_pick = 1
-
-            tags_to_join = []
-            if num_to_pick > 0:
-                # Get the set of available tags for this category
-                available_tags_set = resolved_categories.get(category_name)
-
-                if available_tags_set and len(available_tags_set) > 0:
-                    # Ensure we don't try to sample more tags than available
-                    actual_num_to_sample = min(num_to_pick, len(available_tags_set))
-
-                    # Convert set to list for sampling, then sample using the seeded RNG
-                    tags_to_join = rng.sample(list(available_tags_set), actual_num_to_sample)
-                elif not available_tags_set:
-                     print(f"Warning [RandomNode]: Category '{category_name}' requested in template but not found in YAML.")
-
-
-            # Join the randomly selected tags
-            if tags_to_join:
-                joined_tags = output_delimiter.join(tags_to_join)
-                result_parts.append(joined_tags)
-            # If num_to_pick was 0 or category empty/not found, nothing is appended for this placeholder
-
-            last_end = end
-
-        # Append any remaining literal text
-        result_parts.append(output_template[last_end:])
-        generated_prompt_string = "".join(result_parts)
-
-        # --- 4. Cleanup and Return ---
-        final_prompt = clean_output_string_random(generated_prompt_string, output_delimiter)
-
-        return (final_prompt, used_seed)
+    

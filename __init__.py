@@ -1,34 +1,38 @@
-    # /ComfyUI-Prompt-Formatter/__init__.py
+# /ComfyUI-Prompt-Formatter/__init__.py
 
-# Import the node class
-from .categorized_prompt_formatter import CategorizedPromptFormatter, NODE_NAME as NODE_NAME_FORMATTER
-from .categorized_random_prompt_formatter import CategorizedRandomPromptFormatter, NODE_NAME_RANDOM
-from .categorized_prompt_analyzer import CategorizedPromptAnalyzer, NODE_NAME_ANALYZER
-from .wildcard_importer import WildcardImporter, NODE_NAME_IMPORTER
+# Ensure utils are loaded first to check dependencies
+from . import prompt_formatter_utils
 
-# Mapping node class names to implementations
+# Import node classes
+from .categorized_prompt_formatter import CategorizedPromptFormatter
+from .categorized_random_prompt_formatter import CategorizedRandomPromptFormatter
+from .categorized_prompt_analyzer import CategorizedPromptAnalyzer
+from .wildcard_importer import WildcardImporter
+
+# Standardize NODE_NAME attribute in WildcardImporter for consistency
+if not hasattr(WildcardImporter, 'NODE_NAME'):
+    WildcardImporter.NODE_NAME = "Wildcard Importer"
+
+# Mapping node implementations
 NODE_CLASS_MAPPINGS = {
-    NODE_NAME_FORMATTER: CategorizedPromptFormatter,
-    NODE_NAME_RANDOM: CategorizedRandomPromptFormatter,
-    NODE_NAME_ANALYZER: CategorizedPromptAnalyzer,  
-    NODE_NAME_IMPORTER: WildcardImporter,
+    CategorizedPromptFormatter.NODE_NAME: CategorizedPromptFormatter,
+    CategorizedRandomPromptFormatter.NODE_NAME: CategorizedRandomPromptFormatter,
+    CategorizedPromptAnalyzer.NODE_NAME: CategorizedPromptAnalyzer,  
+    WildcardImporter.NODE_NAME: WildcardImporter,
 }
 
-# Mapping node class names to display names for the UI
+# Mapping display names for the UI
 NODE_DISPLAY_NAME_MAPPINGS = {
-    NODE_NAME_FORMATTER: "📝 Categorized Prompt Formatter",
-    NODE_NAME_RANDOM: "🎲 Categorized Random Prompt Formatter",
-    NODE_NAME_ANALYZER: "📊 Categorized Prompt Analyzer", 
-    NODE_NAME_IMPORTER: "📂 Wildcard Importer",
+    CategorizedPromptFormatter.NODE_NAME: "📝 Categorized Prompt Formatter",
+    CategorizedRandomPromptFormatter.NODE_NAME: "🎲 Categorized Random Prompt Formatter",
+    CategorizedPromptAnalyzer.NODE_NAME: "📊 Categorized Prompt Analyzer", 
+    WildcardImporter.NODE_NAME: "📂 Wildcard Importer",
 }
-# A dictionary that contains all nodes in this file
+
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
 
-print("...")
-print("### Loading: ComfyUI-Prompt-Formatter ###")
-print("### Version: 1.4.1")
-print(f"### Node: {NODE_NAME_FORMATTER} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_FORMATTER]}")
-print(f"### Node: {NODE_NAME_RANDOM} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_RANDOM]}")
-print(f"### Node: {NODE_NAME_ANALYZER} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_ANALYZER]}")
-print(f"### Node: {NODE_NAME_IMPORTER} -> {NODE_DISPLAY_NAME_MAPPINGS[NODE_NAME_IMPORTER]}")
-print("...")
+# Print loading info to console
+print("\n### Loading: ComfyUI-Prompt-Formatter (Version: 1.4.2) ###")
+for name, display_name in NODE_DISPLAY_NAME_MAPPINGS.items():
+    print(f"  - {name} -> {display_name}")
+print("###-------------------------------------------###\n")
