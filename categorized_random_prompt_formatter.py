@@ -3,8 +3,8 @@
 import yaml
 import re
 import random
-Local utility imports
 
+# Local utility imports
 from .prompt_formatter_utils import (
 find_yaml_file,
 clean_output_string,
