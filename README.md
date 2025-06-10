@@ -1,4 +1,4 @@
-# 📝🎲📊📂 ComfyUI Prompt Formatting & Analysis Nodes
+# 📝🎲📊📂 ComfyUI Prompt Formatting Nodes
 
 This repository contains custom nodes for ComfyUI designed to help structure, filter, generate, and **analyze** text prompts using categorized tag definitions stored in a YAML file.
 
@@ -220,7 +220,6 @@ To make the node pack easy to use out-of-the-box, the **Wildcard Importer** is c
 
 *   **Default Wildcard Folder:** It defaults to looking for wildcards in a `wildcards/` subfolder *within this node pack's directory* (`ComfyUI/custom_nodes/ComfyUI-Prompt-Formatter/wildcards/`). You can place your `.txt` wildcard files here.
 *   **Default Output Location:** It saves the generated YAML file (e.g., `imported_wildcards.yaml`) directly inside this node pack's main directory.
-*   **Other Nodes' Defaults:** The Formatter, Random, and Analyzer nodes now default to using `imported_wildcards.yaml`, making it seamless to create a workflow pipeline.
 
 ### Inputs & Widgets
 
