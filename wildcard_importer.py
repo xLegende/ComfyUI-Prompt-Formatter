@@ -74,7 +74,7 @@ class WildcardImporter:
 
         # --- 3. Identify and Filter Target Wildcards ---
         try:
-            all_wildcards = list(wildcard_dir_path.glob('*.txt'))
+            all_wildcards = list(wildcard_dir_path.rglob('*.txt'))
         except Exception as e:
             status_msg = f"ERROR: Could not scan wildcard directory: {e}"
             print(f"[Importer] {status_msg}")
