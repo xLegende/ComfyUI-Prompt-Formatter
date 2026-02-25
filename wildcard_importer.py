@@ -74,13 +74,13 @@ class WildcardImporter:
 
         # --- 3. Identify and Filter Target Wildcards ---
         try:
-            all_wildcards = list(wildcard_dir_path.rglob('*.txt'))
+            all_wildcards = sorted(wildcard_dir_path.rglob('*.txt'))
         except Exception as e:
             status_msg = f"ERROR: Could not scan wildcard directory: {e}"
             print(f"[Importer] {status_msg}")
             return ("", status_msg, 0)
 
-        target_wildcards = []
+        target_wildcards =[]
         if wildcards_to_import.strip() == '*':
             target_wildcards = all_wildcards
         else:
@@ -114,14 +114,14 @@ class WildcardImporter:
                 # --- MERGE LOGIC ---
                 if write_mode == "Merge (Append Unique Tags)" and category_name in yaml_data:
                     # Append unique tags to an existing category
-                    existing_tags = set(yaml_data.get(category_name, []))
-                    new_tags = list(existing_tags.union(wildcard_tags))
+                    existing_tags = set(yaml_data.get(category_name,[]))
+                    new_tags = sorted(existing_tags.union(wildcard_tags))
                     tags_added_this_run = len(new_tags) - len(existing_tags)
                     yaml_data[category_name] = new_tags
                     total_tags_added += tags_added_this_run
                 else:
                     # Overwrite or create new category
-                    yaml_data[category_name] = list(wildcard_tags)
+                    yaml_data[category_name] = sorted(wildcard_tags)
                     total_tags_added += len(wildcard_tags)
 
                 processed_count += 1

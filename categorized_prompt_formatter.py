@@ -64,7 +64,7 @@ class CategorizedPromptFormatter:
         if raw_yaml_data:
             resolved_tags_cache = {}
             for cat_name in list(raw_yaml_data.keys()):
-                if str(cat_name).strip() not in [INCLUDE_DIRECTIVE, TAGS_KEY]:
+                if str(cat_name).strip() not in[INCLUDE_DIRECTIVE, TAGS_KEY]:
                     resolve_category_tags(cat_name, raw_yaml_data, resolved_tags_cache, self.NODE_NAME)
 
             case_sensitive = kwargs.get("case_sensitive_matching", False)
@@ -74,7 +74,7 @@ class CategorizedPromptFormatter:
                     if key: tag_to_categories_map[key].append(cat_name)
 
             for key in tag_to_categories_map:
-                tag_to_categories_map[key] = list(set(tag_to_categories_map[key]))
+                tag_to_categories_map[key] = sorted(set(tag_to_categories_map[key]))
         
         # --- 2. Parse Input Prompt & Categorize ---
         categorized_tags = defaultdict(list)
@@ -98,7 +98,7 @@ class CategorizedPromptFormatter:
                 variants.add(lookup_key.replace(' ', '_'))
                 variants.add(lookup_key.replace('_', ' '))
 
-            for variant in variants:
+            for variant in sorted(variants):
                 if variant in tag_to_categories_map:
                     for category in tag_to_categories_map[variant]:
                         categorized_tags[category].append(tag_original)
@@ -110,7 +110,7 @@ class CategorizedPromptFormatter:
         disable_dupes = kwargs.get("disable_duplicates", False)
         added_tags = set()
         used_tags = set()
-        result_parts = []
+        result_parts =[]
         last_end = 0
 
         for match in re.finditer(r"<\|([^:]+?)(?::(-?\d+))?\|>", output_template):
@@ -118,14 +118,14 @@ class CategorizedPromptFormatter:
             result_parts.append(output_template[last_end:start])
             
             limit = int(limit_str) if limit_str else None
-            tags_for_cat = categorized_tags.get(cat_name, [])
+            tags_for_cat = categorized_tags.get(cat_name,[])
             
             tags_to_process = tags_for_cat
             if limit is not None:
-                tags_to_process = tags_for_cat[:limit] if limit > 0 else (tags_for_cat[limit:] if limit < 0 else [])
+                tags_to_process = tags_for_cat[:limit] if limit > 0 else (tags_for_cat[limit:] if limit < 0 else[])
 
             used_tags.update(tags_to_process)
-            tags_to_join = [t for t in tags_to_process if not (disable_dupes and t in added_tags and not added_tags.add(t))]
+            tags_to_join =[t for t in tags_to_process if not (disable_dupes and t in added_tags and not added_tags.add(t))]
             if tags_to_join: result_parts.append(output_delimiter.join(tags_to_join))
             last_end = end
         
@@ -136,7 +136,7 @@ class CategorizedPromptFormatter:
         unmatched_handling = kwargs.get("unmatched_tag_handling", "discard")
         rejected_prompt = ""
         if unmatched_handling != "discard":
-            rejected_tags = list(all_input_tags - used_tags)
+            rejected_tags = sorted(all_input_tags - used_tags)
             if rejected_tags:
                 rejected_prompt = output_delimiter.join(rejected_tags)
                 if unmatched_handling == "append_end":

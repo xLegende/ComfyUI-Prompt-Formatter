@@ -1,4 +1,4 @@
-#/ComfyUI-Prompt-Formatter/categorized_random_prompt_formatter.py
+# /ComfyUI-Prompt-Formatter/categorized_random_prompt_formatter.py
 
 import yaml
 import re
@@ -68,7 +68,7 @@ class CategorizedRandomPromptFormatter:
             return ("", used_seed)
 
         # --- 3. Process Template & Generate Prompt ---
-        result_parts = []
+        result_parts =[]
         last_end = 0
         for match in re.finditer(r"<\|([^:]+?)(?::(\d+))?\|>", output_template):
             cat_name, count_str, start, end = match.group(1).strip(), match.group(2), *match.span()
@@ -76,10 +76,10 @@ class CategorizedRandomPromptFormatter:
             
             num_to_pick = int(count_str) if count_str and int(count_str) >= 0 else 1
             if num_to_pick > 0:
-                available_tags = list(resolved_categories.get(cat_name, []))
+                available_tags = list(resolved_categories.get(cat_name,[]))
                 if available_tags:
                     sample_count = min(num_to_pick, len(available_tags))
-                    tags_to_join = rng.sample(available_tags, sample_count)
+                    tags_to_join = rng.sample(sorted(available_tags), sample_count)
                     result_parts.append(output_delimiter.join(tags_to_join))
                 else:
                     print(f"Warning [{self.NODE_NAME}]: Category '{cat_name}' not found or empty.")
@@ -90,5 +90,3 @@ class CategorizedRandomPromptFormatter:
         final_prompt = clean_output_string("".join(result_parts), output_delimiter)
         
         return (final_prompt, used_seed)
-
-    

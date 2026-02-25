@@ -61,14 +61,14 @@ class CategorizedPromptAnalyzer:
         if raw_yaml_data:
             cache = {}
             for cat_name in list(raw_yaml_data.keys()):
-                 if str(cat_name).strip() not in [INCLUDE_DIRECTIVE, TAGS_KEY]:
+                 if str(cat_name).strip() not in[INCLUDE_DIRECTIVE, TAGS_KEY]:
                     tags_set = resolve_category_tags(cat_name, raw_yaml_data, cache, self.NODE_NAME)
                     key = str(cat_name).strip() if case_sensitive else str(cat_name).strip().lower()
                     resolved_category_tags[key] = {t if case_sensitive else t.lower() for t in tags_set}
 
         # --- 2. Parse Targets ---
         targets_info = []
-        original_targets = [t.strip() for t in analyze_targets.split(kwargs.get("target_delimiter", ",")) if t.strip()]
+        original_targets =[t.strip() for t in analyze_targets.split(kwargs.get("target_delimiter", ",")) if t.strip()]
         match_spaces = kwargs.get("match_underscores_spaces", True)
 
         for target in original_targets:
@@ -115,6 +115,6 @@ class CategorizedPromptAnalyzer:
 
         unmatched_str = ""
         if kwargs.get("generate_unmatched_output", False):
-            unmatched_str = output_delimiter.join(list(all_input_tags - matched_input_tags))
+            unmatched_str = output_delimiter.join(sorted(all_input_tags - matched_input_tags))
 
         return (summary, total_count, details_str, unmatched_str)
