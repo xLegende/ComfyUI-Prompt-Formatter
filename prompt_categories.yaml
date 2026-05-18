@@ -46,7 +46,6 @@ negative:
   - ugly
   - poorly drawn hands
   - missing limb
-  - blurry
   - floating limbs
   - disconnected limbs
   - malformed hands
@@ -154,6 +153,157 @@ style:
   - mosaic
   - sculpture
   - claymation
+
+# --- Popular Characters---
+character:
+  # Anime/Manga
+  - naruto uzumaki
+  - sasuke uchiha
+  - monkey d luffy
+  - roronoa zoro
+  - son goku
+  - vegeta
+  - gohan
+  - sailor moon
+  - rei ayanami
+  - asuka langley sohryu
+  - shinji ikari
+  - mikasa ackerman
+  - levi ackerman
+  - eren yeager
+  - tanjiro kamado
+  - nezuko kamado
+  - zenitsu agatsuma
+  - inosuke hashibira
+  - satoru gojo
+  - yuji itadori
+  - nobara kugisaki
+  - megumi fushiguro
+  - anya forger
+  - yor forger
+  - loid forger
+  - edward elric
+  - alphonse elric
+  - spike spiegel
+  - vash the stampede
+  - jotaro kujo
+  - dio brando
+  - jolyne cujoh
+  - killua zoldyck
+  - gon freecss
+  - hisoka morow
+  - kurapika
+  - saber (fate)
+  - rin tosaka
+  - makima
+  - power (chainsaw man)
+  - denji (chainsaw man)
+  - rem
+  - emilia
+  - megumin
+  - aqua (konosuba)
+  - saitama
+  - tatsumaki
+  
+  # Gaming
+  - mario
+  - luigi
+  - princess peach
+  - bowser
+  - link
+  - zelda
+  - ganondorf
+  - pikachu
+  - charizard
+  - mewtwo
+  - kirby
+  - samus aran
+  - solid snake
+  - cloud strife
+  - sephiroth
+  - tifa lockhart
+  - aerith gainsborough
+  - kratos
+  - nathan drake
+  - aloy
+  - ellie (the last of us)
+  - joel miller
+  - gordon freeman
+  - doom slayer
+  - master chief
+  - cortana
+  - 2b
+  - 9s
+  - jinx
+  - ahri
+  - lux
+  - yasuo
+  - tracer
+  - d.va
+  - mercy
+  - reinhardt
+  - genji
+  - lara croft
+  - geralt of rivia
+  - ciri
+  - yennefer of vengerberg
+  - triss merigold
+  - isabelle
+  - sonic the hedgehog
+  - shadow the hedgehog
+  - bayonetta
+  - dante (devil may cry)
+  - vergil (devil may cry)
+  
+  # Genshin Impact / Hoyoverse
+  - raiden shogun
+  - yae miko
+  - hu tao
+  - ganyu
+  - klee
+  - nahida
+  - furina
+  - arlecchino
+  - march 7th
+  - kafka
+  - bronya zaychik
+  - seele vollerei
+  - jing yuan
+  
+  # Comics / Pop Culture
+  - harry potter
+  - hermione granger
+  - ron weasley
+  - voldemort
+  - luke skywalker
+  - han solo
+  - princess leia
+  - darth vader
+  - yoda
+  - rey skywalker
+  - kylo ren
+  - captain america
+  - iron man
+  - thor
+  - black widow
+  - hulk
+  - loki
+  - spider-man
+  - batman
+  - joker
+  - wonder woman
+  - catwoman
+  - harley quinn
+  - deadpool
+  - wolverine
+  - superman
+  - supergirl
+  - storm
+  - magneto
+  - gandalf
+  - frodo baggins
+  - legolas
+  - aragorn
 
 # --- Character Basics ---
 character_num:
@@ -546,6 +696,20 @@ skin_details:
   - oily skin
   - dry skin
   
+face_details:
+  - sharp jawline
+  - high cheekbones
+  - dimples
+  - beauty mark
+  - mole
+  - freckles
+  - blushing
+  - nose ring
+  - lipstick
+  - eyeliner
+  - eyeshadow
+  - mascara
+
 # --- Objects/Items ---
 object:
   - book
@@ -763,6 +927,43 @@ clothing:
  tags:
   - clothing
 
+# --- Clothing Patterns & Details ---
+patterns:
+  - stripes
+  - polka dots
+  - plaid
+  - tartan
+  - floral print
+  - paisley
+  - checkerboard
+  - camo
+  - lace trim
+  - embroidery
+  - fur-trimmed
+  - hooded
+
+# --- Texture & Material Modifiers ---
+texture:
+  - metallic
+  - glossy
+  - matte
+  - satin
+  - velvet
+  - silk
+  - leather
+  - denim
+  - lace
+  - fur
+  - transparent
+  - translucent
+  - crystalline
+  - wooden
+  - stone
+  - marble
+  - rusted
+  - corroded
+  - holographic
+  - iridescent
 
 # --- Actions ---
 action:
@@ -892,6 +1093,25 @@ setting:
   - blizzard
   - foggy
   - windy
+
+  # --- Weather & Time Effects ---
+environment_mood:
+  - golden hour
+  - twilight
+  - blue hour
+  - moonlight
+  - starfall
+  - aurora borealis
+  - northern lights
+  - fireflies
+  - swirling mist
+  - heavy fog
+  - heat haze
+  - blizzard
+  - falling leaves
+  - cherry blossoms
+  - petals
+  - dust motes
   
 # --- Shot Type ---
 shot_type:
@@ -916,6 +1136,23 @@ angle:
   - worm's eye view
   - pov (point of view)
   
+# --- Compositional "Meta" Tags ---
+composition:
+  - dynamic composition
+  - wide shot
+  - extreme close-up
+  - rule of thirds
+  - central composition
+  - low angle
+  - high angle
+  - bird's eye view
+  - worm's eye view
+  - symmetrical
+  - leading lines
+  - frame within a frame
+  - reflection
+  - silhouette
+
 # --- Lighting ---
 lighting:
   - cinematic lighting
@@ -933,6 +1170,24 @@ lighting:
   - neon lights
   - lens flare
   
+# --- Fantasy Magic Systems & Effects ---
+magic_effects:
+  - glowing aura
+  - floating particles
+  - energy burst
+  - runes
+  - magic circles
+  - spellcasting
+  - elemental fire
+  - elemental ice
+  - elemental lightning
+  - elemental wind
+  - elemental earth
+  - arcane symbols
+  - light rays
+  - dark energy
+  - sparks
+
 # --- Camera & Composition ---
 camera:
  $include:
@@ -956,6 +1211,30 @@ camera:
   - leading lines
   - dynamic angle
   - dynamic pose
+
+# --- Artistic Techniques & Mediums ---
+technique:
+  - double exposure
+  - light painting
+  - bokeh
+  - motion blur
+  - shallow depth of field
+  - high contrast
+  - HDR
+  - color grading
+  - sepia
+  - monochromatic
+  - sketch, graphite
+  - charcoal
+  - ink wash
+  - impasto
+  - palette knife
+  - airbrush
+  - vector art
+  - pop surrealism
+  - synthwave
+  - vaporwave
+  - glitch art
   
 # --- Atmosphere & Mood ---
 atmosphere:

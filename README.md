@@ -1,4 +1,4 @@
-# 📝🎲📊📂 ComfyUI Prompt Formatting Nodes
+# 📝🎲📊📂✨ ComfyUI Prompt Formatting Nodes
 
 This repository contains custom nodes for ComfyUI designed to help structure, filter, generate, and **analyze** text prompts using categorized tag definitions stored in a YAML file.
 
@@ -7,7 +7,8 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 1.  **📝 Categorized Prompt Formatter:** Filters and restructures an *existing* input prompt based on categories and a template. Preserves tag details like weights.
 2.  **🎲 Categorized Random Prompt Formatter:** *Generates* a new random prompt by sampling tags from categories defined in the YAML, using a template structure and a seed for reproducibility.
 3.  **📊 Categorized Prompt Analyzer:** *Analyzes* an input prompt to count occurrences of specific tags or tags belonging to specified categories.
-4.  **📂 Wildcard Importer:** A utility node that scans a directory of `.txt` wildcard files and converts them into a single, structured YAML file, making it easy to use existing wildcard collections with this node pack.
+4.  **📂 Wildcard Importer:** A utility node that scans a directory of `.txt` wildcard files and converts them into a single, structured YAML file.
+4.  **✨ Prompt Normalizer:** A utility node that cleans up messy prompts by fixing bracket weights, removing excessive whitespace, and standardizing delimiter usage.
 
 ---
 
@@ -16,9 +17,11 @@ This repository contains custom nodes for ComfyUI designed to help structure, fi
 *   **YAML-based Categorization:** Define tags belonging to specific categories (e.g., `eyes`, `style`, `quality`) in an easy-to-edit YAML file.
 *   **Hierarchical Categories (`$category`, `$include`):** Define broad categories that automatically inherit tags from more specific ones without manual repetition in the YAML, using either list-based or dictionary-based includes.
 *   **Inline Tag Expansion:** Generate combinatorial tags within the YAML itself (e.g., `$color eyes`).
-*   **Template-Driven Output (Formatter/Random):** Control the structure of the output prompt using simple placeholders like `<|category_name|>`.
+*   **Dynamic Prompting:** Supports {weight::tag|tag}-style weighted random choices within prompts.
+*   **Template-Driven Output:** Control the structure of the output prompt using placeholders like `<|category_name:N|>`.
 *   **Flexible Tag Handling:** Options for case sensitivity and matching tags regardless of underscores vs. spaces (e.g., `blue_eyes` vs `blue eyes`).
-*   **Wildcard Integration:** Use the **Wildcard Importer** node to automatically convert entire folders of standard `.txt` wildcards into a compatible YAML file.
+*   **Wildcard Integration:** Use the **Wildcard Importer** node to automatically convert entire folders of standard `.txt` wildcards into a compatible YAML files.
+*   **Prompt Sanitization:** Clean up bracket math, spacing, and formatting errors automatically.
 
 ---
 
@@ -246,6 +249,29 @@ To make the node pack easy to use out-of-the-box, the **Wildcard Importer** is c
 3.  Add a **🎲 Categorized Random Prompt Formatter** node.
 4.  Connect the `output_yaml_path` from the Importer to the `category_definition_file` input of the Random Formatter.
 5.  Run the workflow. The Importer will create `imported_wildcards.yaml`, and the Random Formatter will immediately be able to use the newly imported categories to generate a random prompt.
+
+---
+
+## 5. ✨ Prompt Normalizer
+
+This utility node cleans up user-input prompts, ensuring that weights and brackets are mathematically consistent and the syntax is clean.
+
+![Prompt Normalizer Node UI](img/normalizer_node.png) 
+
+### Inputs
+
+*   `prompt` (String): The raw input prompt to be cleaned.
+*   `weight_step` (Float): The multiplier used when converting brackets to weights (e.g., `((tag))` at 1.1 step becomes `(tag:1.21)`). Default: `1.1`.
+
+### Outputs
+
+*   `normalized_prompt` (String): The cleaned, standardized prompt string.
+
+### Features
+
+*   **Weight Calculation:** Converts nested brackets like `((tag))` into explicit weights like `(tag:1.21)` based on your `weight_step`.
+*   **Syntax Cleanup:** Standardizes spacing around commas, pipes (`|`), and brackets.
+*   **Bracket Balancing:** Corrects common manual entry errors in prompt bracketing.
 
 ---
 

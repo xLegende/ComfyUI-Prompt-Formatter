@@ -63,7 +63,7 @@ def find_yaml_file(filename: str, node_name: str = "Prompt Formatter"):
     except Exception as e:
         print(f"Warning [{node_name}]: Error searching for ComfyUI input directory: {e}")
         
-    print(f"Warning [{node_name}]: YAML file '{filename}' not found as absolute, relative to node, or in standard input directories.")
+    print(f"Warning[{node_name}]: YAML file '{filename}' not found as absolute, relative to node, or in standard input directories.")
     return None
 
 # --- String & Tag Processing ---
@@ -84,7 +84,7 @@ def parse_tag(tag: str, handle_weights: bool = True):
     if not handle_weights: return original_tag, original_tag
         
     base_tag = original_tag
-    patterns = [
+    patterns =[
         r"^\s*\(\s*(.*?)\s*(?::\s*[\d.]+\s*)?\)\s*$", # (tag:weight) or (tag)
         r"^\s*\[\s*(.*?)\s*\]\s*$",                  # [tag]
         r"^\s*\{\s*(.*?)\s*\}\s*$"                   # {tag}
@@ -99,6 +99,59 @@ def parse_tag(tag: str, handle_weights: bool = True):
             return original_tag, base_tag
             
     return original_tag, base_tag.strip()
+
+def resolve_inline_choices(text: str, rng) -> str:
+    """
+    Resolves standard dynamic prompt inline choices like {red|blue|green}.
+    Supports weighted choices like {0.2::red|0.8::blue} and nested ones like {a|{b|c}}.
+    """
+    if not text:
+        return text
+        
+    pattern = re.compile(r'\{([^{}]+)\}')
+    
+    def repl(match):
+        choices_str = match.group(1)
+        choices = choices_str.split('|')
+        
+        weighted_choices =[]
+        for c in choices:
+            c = c.strip()
+            if '::' in c:
+                parts = c.split('::', 1)
+                try:
+                    weight = float(parts[0])
+                    choice = parts[1]
+                except ValueError:
+                    weight = 1.0
+                    choice = c
+            else:
+                weight = 1.0
+                choice = c
+            weighted_choices.append((weight, choice))
+            
+        total_weight = sum(w for w, c in weighted_choices)
+        if total_weight <= 0:
+            picked = rng.choice([c for w, c in weighted_choices]) if weighted_choices else ""
+        else:
+            r = rng.uniform(0, total_weight)
+            upto = 0
+            picked = weighted_choices[-1][1] if weighted_choices else ""
+            for w, c in weighted_choices:
+                if upto + w >= r:
+                    picked = c
+                    break
+                upto += w
+                
+        return picked
+
+    prev_text = None
+    # We loop it to resolve nested brackets from the innermost layer recursively
+    while text != prev_text:
+        prev_text = text
+        text = pattern.sub(repl, text)
+        
+    return text
 
 # --- YAML Category Resolution ---
 
@@ -144,7 +197,7 @@ def resolve_category_tags(category_name: str, yaml_data: dict, resolved_cache: d
     elif isinstance(category_data, dict):
         if INCLUDE_DIRECTIVE in category_data:
             includes = category_data[INCLUDE_DIRECTIVE]
-            include_list = [str(inc).strip() for inc in includes] if isinstance(includes, list) else [str(includes).strip()]
+            include_list = [str(inc).strip() for inc in includes] if isinstance(includes, list) else[str(includes).strip()]
             for included_category in include_list:
                 final_tags.update(resolve_category_tags(included_category, yaml_data, resolved_cache, node_name, recursion_guard.copy()))
         if TAGS_KEY in category_data and isinstance(category_data[TAGS_KEY], list):

@@ -25,7 +25,7 @@ class CategorizedPromptAnalyzer:
         return {
             "required": {
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
-                "analyze_targets": ("STRING", {"multiline": False, "default": "quality, eyes, 1girl"}),
+                "analyze_targets": ("STRING", {"multiline": False, "default": "quality, eyes, clothing"}),
                 "category_definition_file": ("STRING", {"default": "prompt_categories.yaml"}),
             },
             "optional": {

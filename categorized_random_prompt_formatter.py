@@ -9,6 +9,7 @@ from .prompt_formatter_utils import (
     find_yaml_file,
     clean_output_string,
     resolve_category_tags,
+    resolve_inline_choices,
     INCLUDE_DIRECTIVE,
     TAGS_KEY
 )
@@ -27,7 +28,7 @@ class CategorizedRandomPromptFormatter:
                 "category_definition_file": ("STRING", {"default": "prompt_categories.yaml"}),
                 "output_template": ("STRING", {
                     "multiline": True,
-                    "default": "<|quality:1|>, <|character:1|>, <|details:3|>, <|setting:1|>"
+                    "default": "<|quality:1|>, <|character:1|>, <|setting:1|>"
                 }),
                 "seed": ("INT", {"default": -1, "min": -1, "max": 0xffffffffffffffff}),
             },
@@ -62,20 +63,27 @@ class CategorizedRandomPromptFormatter:
         if raw_yaml_data:
             cache = {}
             for cat_name in list(raw_yaml_data.keys()):
-                if str(cat_name).strip() not in [INCLUDE_DIRECTIVE, TAGS_KEY]:
+                if str(cat_name).strip() not in[INCLUDE_DIRECTIVE, TAGS_KEY]:
                     resolved_categories[str(cat_name).strip()] = resolve_category_tags(cat_name, raw_yaml_data, cache, self.NODE_NAME)
         else:
             return ("", used_seed)
 
         # --- 3. Process Template & Generate Prompt ---
+        # First resolve inline choices in template to avoid breaking placeholder syntax if any
+        template_resolved = resolve_inline_choices(output_template, rng)
+        
         result_parts =[]
         last_end = 0
-        for match in re.finditer(r"<\|([^:]+?)(?::(\d+))?\|>", output_template):
-            cat_name, count_str, start, end = match.group(1).strip(), match.group(2), *match.span()
-            result_parts.append(output_template[last_end:start])
+        
+        for match in re.finditer(r"<\|([^:]+?)(?::(-?\d+))?(?::([0-9.]+))?\|>", template_resolved):
+            cat_name, count_str, prob_str, start, end = match.group(1).strip(), match.group(2), match.group(3), *match.span()
+            result_parts.append(template_resolved[last_end:start])
             
+            probability = float(prob_str) if prob_str else 1.0
             num_to_pick = int(count_str) if count_str and int(count_str) >= 0 else 1
-            if num_to_pick > 0:
+            
+            # Probability test block
+            if num_to_pick > 0 and rng.random() <= probability:
                 available_tags = list(resolved_categories.get(cat_name,[]))
                 if available_tags:
                     sample_count = min(num_to_pick, len(available_tags))
@@ -86,7 +94,11 @@ class CategorizedRandomPromptFormatter:
             
             last_end = end
         
-        result_parts.append(output_template[last_end:])
-        final_prompt = clean_output_string("".join(result_parts), output_delimiter)
+        result_parts.append(template_resolved[last_end:])
+        
+        # Second resolution step handles inline choices nested from inside categorized tags 
+        joined_prompt = "".join(result_parts)
+        final_prompt = resolve_inline_choices(joined_prompt, rng)
+        final_prompt = clean_output_string(final_prompt, output_delimiter)
         
         return (final_prompt, used_seed)

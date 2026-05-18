@@ -8,6 +8,7 @@ from .categorized_prompt_formatter import CategorizedPromptFormatter
 from .categorized_random_prompt_formatter import CategorizedRandomPromptFormatter
 from .categorized_prompt_analyzer import CategorizedPromptAnalyzer
 from .wildcard_importer import WildcardImporter
+from .prompt_normalizer import PromptNormalizer
 
 # Standardize NODE_NAME attribute in WildcardImporter for consistency
 if not hasattr(WildcardImporter, 'NODE_NAME'):
@@ -19,6 +20,7 @@ NODE_CLASS_MAPPINGS = {
     CategorizedRandomPromptFormatter.NODE_NAME: CategorizedRandomPromptFormatter,
     CategorizedPromptAnalyzer.NODE_NAME: CategorizedPromptAnalyzer,  
     WildcardImporter.NODE_NAME: WildcardImporter,
+    PromptNormalizer.NODE_NAME: PromptNormalizer,
 }
 
 # Mapping display names for the UI
@@ -27,12 +29,13 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CategorizedRandomPromptFormatter.NODE_NAME: "🎲 Categorized Random Prompt Formatter",
     CategorizedPromptAnalyzer.NODE_NAME: "📊 Categorized Prompt Analyzer", 
     WildcardImporter.NODE_NAME: "📂 Wildcard Importer",
+    PromptNormalizer.NODE_NAME: "✨ Prompt Normalizer",
 }
 
-__all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
+__all__ =['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
 
 # Print loading info to console
-print("\n### Loading: ComfyUI-Prompt-Formatter (Version: 1.4.2) ###")
+print("\n### Loading: ComfyUI-Prompt-Formatter (Version: 1.5.0) ###")
 for name, display_name in NODE_DISPLAY_NAME_MAPPINGS.items():
     print(f"  - {name} -> {display_name}")
 print("###-------------------------------------------###\n")

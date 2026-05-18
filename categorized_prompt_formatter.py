@@ -2,6 +2,7 @@
 
 import yaml
 import re
+import random
 from collections import defaultdict
 
 # Local utility imports
@@ -10,6 +11,7 @@ from .prompt_formatter_utils import (
     parse_tag,
     clean_output_string,
     resolve_category_tags,
+    resolve_inline_choices,
     INCLUDE_DIRECTIVE,
     TAGS_KEY
 )
@@ -37,6 +39,7 @@ class CategorizedPromptFormatter:
                  "match_underscores_spaces": ("BOOLEAN", {"default": True}),
                  "disable_duplicates": ("BOOLEAN", {"default": False}),
                  "unmatched_tag_handling": (["discard", "append_end", "output_separately"], {"default": "discard"}),
+                 "seed": ("INT", {"default": -1, "min": -1, "max": 0xffffffffffffffff}),
             }
         }
 
@@ -46,6 +49,11 @@ class CategorizedPromptFormatter:
     CATEGORY = "text/filtering"
 
     def format_prompt(self, prompt, category_definition_file, output_template, **kwargs):
+        # --- Handle Randomness for Inline Choices and Probability ---
+        seed = kwargs.get("seed", -1)
+        used_seed = random.randint(0, 0xffffffffffffffff) if seed == -1 else seed
+        rng = random.Random(used_seed)
+        
         # --- 1. Load & Resolve Category Definitions ---
         tag_to_categories_map = defaultdict(list)
         yaml_path = find_yaml_file(category_definition_file, self.NODE_NAME)
@@ -108,29 +116,41 @@ class CategorizedPromptFormatter:
         # --- 3. Process Template ---
         output_delimiter = kwargs.get("output_delimiter", ", ")
         disable_dupes = kwargs.get("disable_duplicates", False)
+        
+        # Resolve inline choices inside the template string first to maintain correct template markup evaluation
+        template_resolved = resolve_inline_choices(output_template, rng)
+        
         added_tags = set()
         used_tags = set()
         result_parts =[]
         last_end = 0
 
-        for match in re.finditer(r"<\|([^:]+?)(?::(-?\d+))?\|>", output_template):
-            cat_name, limit_str, start, end = match.group(1).strip(), match.group(2), *match.span()
-            result_parts.append(output_template[last_end:start])
+        for match in re.finditer(r"<\|([^:]+?)(?::(-?\d+))?(?::([0-9.]+))?\|>", template_resolved):
+            cat_name, limit_str, prob_str, start, end = match.group(1).strip(), match.group(2), match.group(3), *match.span()
+            result_parts.append(template_resolved[last_end:start])
             
-            limit = int(limit_str) if limit_str else None
-            tags_for_cat = categorized_tags.get(cat_name,[])
+            probability = float(prob_str) if prob_str else 1.0
             
-            tags_to_process = tags_for_cat
-            if limit is not None:
-                tags_to_process = tags_for_cat[:limit] if limit > 0 else (tags_for_cat[limit:] if limit < 0 else[])
+            # Probability test block
+            if rng.random() <= probability:
+                limit = int(limit_str) if limit_str else None
+                tags_for_cat = categorized_tags.get(cat_name,[])
+                
+                tags_to_process = tags_for_cat
+                if limit is not None:
+                    tags_to_process = tags_for_cat[:limit] if limit > 0 else (tags_for_cat[limit:] if limit < 0 else[])
 
-            used_tags.update(tags_to_process)
-            tags_to_join =[t for t in tags_to_process if not (disable_dupes and t in added_tags and not added_tags.add(t))]
-            if tags_to_join: result_parts.append(output_delimiter.join(tags_to_join))
+                used_tags.update(tags_to_process)
+                tags_to_join =[t for t in tags_to_process if not (disable_dupes and t in added_tags and not added_tags.add(t))]
+                if tags_to_join: result_parts.append(output_delimiter.join(tags_to_join))
+                
             last_end = end
         
-        result_parts.append(output_template[last_end:])
+        result_parts.append(template_resolved[last_end:])
         formatted_prompt = "".join(result_parts)
+        
+        # Second resolution step handles inline choices inside categorized tags 
+        formatted_prompt = resolve_inline_choices(formatted_prompt, rng)
 
         # --- 4. Handle Unmatched Tags ---
         unmatched_handling = kwargs.get("unmatched_tag_handling", "discard")
